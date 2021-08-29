@@ -1,0 +1,45 @@
+---
+title: "Homework assignment 1. Programación y modelación financiera (PMF)"
+author: "XXXX XXXX, Lara Weitgasser A01759114"
+date: "8/29/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyquant)
+library(ggplot2)
+library(quantmod)
+library(finreportr)
+library(tibble)
+library(tbl2xts)
+library(dplyr)
+```
+
+## R Markdown
+
+
+
+```{r cars}
+Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
+     group_by(symbol) %>%
+     ggplot(aes(x = date, y = adjusted, color = symbol)) +
+     geom_line(size = 1) +
+     coord_x_date(xlim = c("2016-12-30","2021-07-31"))+
+     labs(title = "Daily stock prices - 2016-12-30 to 2021-07-31",
+          x = "", y = "Adjusted prices", color = "") +
+     scale_y_continuous(labels = scales::dollar) +
+     theme_tq() + scale_color_tq()
+Stock_AFGN
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
