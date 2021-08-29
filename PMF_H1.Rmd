@@ -17,11 +17,11 @@ library(dplyr)
 library(lazyeval)
 ```
 
-## R Markdown
-
-
+## From prices to returns
+At first we loaded and plotted the data for the four companies Amazon, Facebook, Google and Netflix for the timeframe 2016-12-30 to 2021-07-31 in order to compare them to the FANG dataset that ends in 2016.
 
 ```{r cars}
+#Plot: Amazon, Facebook, Google and Netflix 2016-12-30 to 2021-07-31
 Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
      ggplot(aes(x = date, y = adjusted, color = symbol)) +
@@ -32,11 +32,11 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      scale_y_continuous(labels = scales::dollar) +
      theme_tq() + scale_color_tq()
 Stock_AFGN
-
 ```
-
+As this plot distorts the perspective on the stock market of the four companies, the next plot shows the four companies separated in order to make comparisons easier and valuable.
 
 ```{r}
+#Amazon, Facebook, Google and Netflix 2016-12-30 to 2021-07-31
 Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
      ggplot(aes(x = date, y = adjusted, color = symbol)) +
@@ -49,9 +49,10 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      theme_tq() + scale_color_tq()
 Stock_AFGN
 ```
-
+The above plot has the strength of showing the companies separated, however, to make a good comparison, it is important to look at annual returns which is shown below.
 
 ```{r}
+#Annual returns of Amazon, Facebook, Google and Netflix from 2017 to 2021
 Stock_AFGN_annual_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
         filter(date>"2016-12-30")%>%
@@ -76,12 +77,4 @@ facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
