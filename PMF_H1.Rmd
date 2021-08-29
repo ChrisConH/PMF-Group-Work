@@ -34,6 +34,33 @@ Stock_AFGN
 
 ```
 
+
+```{r}
+Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
+     group_by(symbol) %>%
+     ggplot(aes(x = date, y = adjusted, color = symbol)) +
+     geom_line(size = 1) +
+     coord_x_date(xlim = c("2016-12-30","2021-07-31"))+
+     labs(title = "Daily stock prices - 2016-12-30 to 2021-07-31",
+          x = "", y = "Adjusted prices", color = "") +
+        facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+     scale_y_continuous(labels = scales::dollar) +
+     theme_tq() + scale_color_tq()
+Stock_AFGN
+```
+
+
+```{r}
+Stock_AFGN_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
+     group_by(symbol) %>%
+        tq_transmute(select = adjusted,
+        mutate_fun = periodReturn,
+        period = "yearly",
+        type = "arithmetic")
+
+Stock_AFGN_returns
+```
+
 ## Including Plots
 
 You can also embed plots, for example:
