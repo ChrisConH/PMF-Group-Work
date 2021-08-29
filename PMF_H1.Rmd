@@ -71,10 +71,140 @@ ggplot(aes(x = date-365, y = yearly.returns, fill = symbol)) +
 geom_col() +
 geom_hline(yintercept = 0, color = palette_light()[[1]]) +
 scale_y_continuous(labels = scales::percent) +
-labs(title = "FANG: Annual Returns",
+labs(title = "Annual Returns: Amazon, Facebook, Google and Netflix from 2017 to 2021",
 y = "Annual Returns", x = "") +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
 
+
+```{r}
+#Cumulative Returns
+Stock_AFGN_annual_cum_returns <- Stock_AFGN_annual_returns %>%
+mutate(cr = 100*cumprod(1 + yearly.returns)) %>%
+# Plot the results.
+ggplot(aes(x = date-365, y = cr, fill = symbol)) + geom_col() +
+labs(title = "Yearly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2016-12-30 to 2021-07-31",
+x = "", y = "USD value at the end of the year", color = "") +
+scale_y_continuous(labels = scales::dollar) +
+facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+theme_tq() + scale_color_tq()
+Stock_AFGN_annual_cum_returns
+```
+
+
+```{r}
+# Monthly returns.
+Stock_AFGN_monthly_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
+     group_by(symbol) %>%
+        filter(date>"2016-12-30")%>%
+        tq_transmute(select = adjusted,
+        mutate_fun = periodReturn,
+        period = "monthly",
+        type = "arithmetic")
+# Plot the results.
+ggplot(Stock_AFGN_monthly_returns, aes(x = date-12,
+y = monthly.returns, fill = symbol)) +
+geom_col() +
+geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+scale_y_continuous(labels = scales::percent) +
+labs(title = "Amazon, Facebook, Google and Netflix: Monthly Returns", y = "Monthly Returns",
+x = "") +
+facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+theme_tq() + scale_fill_tq()
+```
+
+
+```{r}
+# Calculate monthly cumulative returns.
+Stock_AFGN_monthly_cum_returns <- Stock_AFGN_monthly_returns %>%
+mutate(cr = 100 * cumprod(1 + monthly.returns))
+# Plot results.
+ggplot(Stock_AFGN_monthly_cum_returns, aes(x = date-12, y = cr,
+color = symbol)) +
+geom_line(size = 1) +
+labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2016-12-30 to 2021-07-31",
+x = "", y = "USD value at the end of the year",
+color = "") +
+scale_y_continuous(labels = scales::dollar) +
+theme_tq() + scale_color_tq()
+```
+
+
+```{r}
+# Plot results.
+ggplot(Stock_AFGN_monthly_cum_returns, aes(x = date-12, y = cr,
+color = symbol)) +
+geom_line(size = 1) +
+labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2016-12-30 to 2021-07-31",
+x = "", y = "USD value at the end of the year",
+color = "") +
+scale_y_continuous(labels = scales::dollar) +
+facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+theme_tq() + scale_color_tq()
+```
+
+
+```{r}
+# Density plots.
+ggplot(Stock_AFGN_monthly_returns, aes(x = monthly.returns,
+fill = symbol)) +
+geom_density(alpha = 0.5) +
+geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns",
+x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+theme_tq() + scale_fill_tq()
+```
+
+
+```{r}
+# Density plots.
+ggplot(Stock_AFGN_monthly_returns, aes(x = monthly.returns,
+fill = symbol)) +
+geom_density(alpha = 0.5) +
+geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns",
+x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
+```
+
+
+
+```{r}
+# Calculate relevant statistics.
+Stock_AFGN_stats <- Stock_AFGN_monthly_returns %>%
+summarise(mean = mean(monthly.returns), sd = sd(monthly.returns),
+sr = mean/sd, iqr = IQR(monthly.returns))
+Stock_AFGN_stats
+```
+
+
+```{r}
+Stock_AFGN_stats %>%
+ggplot(aes(x = sd, y = mean, color = symbol)) +
+geom_point(size = 5) +
+geom_text(aes(label = paste0(round(sr, 3))),
+vjust = 2, color = "black", size = 3.5) +
+xlim(0.04, 0.18) + ylim(0.01, 0.06) +
+labs(title = "XXXX",
+subtitle = "Numerical values represent return per unit of risk.",
+x = "Risk", y = "Return") + theme_tq()
+```
+
+
+```{r}
+# Create random assets.
+less_risky <- data.frame(length = rnorm(10000, 0, 1))
+more_risky <- data.frame(length = rnorm(10000, 0, 2))
+# Name random assets.
+less_risky$asset <- 'Less risky asset'
+more_risky$asset <- 'Riskier asset'
+assets <- rbind(less_risky, more_risky)
+# Plot the assets.
+ggplot(assets, aes(length, fill = asset)) +
+geom_density(alpha = 0.5, adjust = 3)
+```
 
