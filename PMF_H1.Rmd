@@ -1,6 +1,12 @@
 ---
 title: "Homework assignment 1. Programación y modelación financiera (PMF)"
-author: "XXXX XXXX, Lara Weitgasser A01759114"
+author: 
+- name: Lara Weitgasse A00820434
+- name: Karina Albarrán A01377604
+- name: Christian Contreras A00819400
+- name: María Julia Romero A00819400
+- name: Melanie Flores A00820434
+- name: Adriana Beatriz Santos A00823399
 date: "8/29/2021"
 output: pdf_document
 ---
@@ -17,7 +23,44 @@ library(dplyr)
 library(lazyeval)
 ```
 
-## From prices to returns
+## Asset returns 
+As we know, a return is the percentage change of an asset price.It turns out that asset returns exhibit more attractive statistical properties than asset prices themselves.  In finance, it is very important to know the asset returns because our primary goal of investing in a financial market is to make profits without taking excessive risks. 
+Now, let's proceed with our analysis. The original FANG database
+from 2013-01-02 to 2016-12-30 will be compared with the analyzed results from 2016-12-30 to 2021-07-31. 
+
+## From prices tu returns FANG database
+First, we need a visual representation of the FANG database. In this part we have daily stock prices per stock. 
+
+```{r}
+#Plot the data FANG data
+FANG_daily_all <- FANG %>%
+  group_by(symbol) %>%
+  ggplot(aes(x= date, y= adjusted, color = symbol)) +
+  geom_line(size = 1) +
+  labs(title = "Daily stock prices -from 2013-01-02 to 2016-12-30 ",
+       x = "", y ="adjusted princes", color = "") +
+  scale_y_continuous(labels = scales::dollar) +
+  theme_tq() + scale_color_tq()
+FANG_daily_all
+```
+We can see how stock prices fluctuate in different ranges. Here we still cannot make a decision about the action to prefer since we only can observe the fluctuation of the stock prices. Remember making investment decisions based on prices could be misleading. Besides, we must separate each graph so that we can see more clearly each price evolution. 
+
+```{r}
+#Facet makes it easier to read
+FANG_daily <- FANG %>%
+  group_by(symbol) %>%
+  ggplot(aes(x= date, y= adjusted, color = symbol)) +
+  geom_line(size = 1) +
+  labs(title = "Daily stock prices -from 2013-01-02 to 2016-12-30 ",
+       x = "", y ="adjusted princes", color = "") +
+        facet_wrap( ~ symbol, ncol = 2, scales = "free_y") +
+  scale_y_continuous(labels = scales::dollar) +
+  theme_tq() + scale_color_tq()
+FANG_daily
+```
+Now that it is more clear we can notice that all stock prices have a positive trend over time, but 2014 was a little bad for Amazon, Google and Netflix. Let's compare our plot with the daily stock prices from 2016-12-30 to 2021-07-31.
+
+## From prices to returns from 2016-12-30 to 2021-07-31 
 At first we loaded and plotted the data for the four companies Amazon, Facebook, Google and Netflix for the timeframe 2016-12-30 to 2021-07-31 in order to compare them to the FANG dataset that ends in 2016.
 
 ```{r cars}
@@ -49,7 +92,38 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      theme_tq() + scale_color_tq()
 Stock_AFGN
 ```
-The above plot has the strength of showing the companies separated, however, to make a good comparison, it is important to look at annual returns which is shown below.
+The above plot has the strength of showing the companies separated, however, to make a good comparison, it is important to look at annual returns which will be shown later. It is also important to emphasize, that in a period of 2020 there was a decline in the stock prices of Amazon, Google, Facebook and Netflix. This is because the stock price decreases by the announcement of the pandemic, approximately in March, which is when we can see the decrease in prices. Notwithstanding the pandemic, the four companies recovered. 
+
+## Comparison from prices to returns 
+We can notice that from 2013-01-02 to 2016-12-30 compare to new data from 2016-12-30 to 2021-07-31, the prices of all four companies has grown significantly. In both cases, we could say that we prefer Amazon or Google because they have larger price changes compared with Facebook or Netflix, but this would be a mistake. On the other hand, Google in the new data from 2016-12-30 to 2021-07-31 compare to the FANG database had sustained growth, in other words we can say that it had growth without much volatility as Netflix.  
+As mentioned above, we can't make a decision based solely on price, but we can visualize the data to help us to compare the evolution of price per stock. 
+
+## Yearly Returns
+To make a good and inform decision we need the asset returns. So, we select the adjusted prices and transform it into yearly returns. First we are going to analyze FANG database.
+```{r}
+#Yearly returns FANG database
+FANG_annual_returns <- FANG %>%
+        group_by(symbol)%>%
+        tq_transmute(select = adjusted,
+                     mutate_fun = periodReturn,
+                     period = "yearly", 
+                     type = "arithmetic")
+FANG_annual_returns
+```
+Now, the next chunk code shows how to visualize the annual returns in a plot
+``` {r}
+#Plot tha annual returns FANG database
+FANG_annual_returns %>%
+        ggplot(aes(x= date-365, y = yearly.returns, fill = symbol)) +
+        geom_col() +
+        geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+        scale_y_continuous(labels = scales::percent) +
+        labs(title = "FANG: Annual Returns",
+             y = "Annual Returns", x = "") +
+        facet_wrap(~ symbol, ncol = 2, scales = "free_y") + 
+        theme_tq() + scale_fill_tq()
+```
+2014 was indeed the worst year for Amazon, Google and Netflix. Now, lets see the annual returns from 2016-12-30 to 2021-07-31. 
 
 ```{r}
 #Annual returns of Amazon, Facebook, Google and Netflix from 2017 to 2021
@@ -63,23 +137,42 @@ Stock_AFGN_annual_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
 
 Stock_AFGN_annual_returns
 ```
-
-
+Now, the next chunk code shows how to visualize the annual returns from 2017 to 2021 in a plot
 ```{r}
 Stock_AFGN_annual_returns %>%
 ggplot(aes(x = date-365, y = yearly.returns, fill = symbol)) +
 geom_col() +
 geom_hline(yintercept = 0, color = palette_light()[[1]]) +
 scale_y_continuous(labels = scales::percent) +
-labs(title = "Annual Returns: Amazon, Facebook, Google and Netflix from 2017 to 2021",
+labs(title = "Annual Returns: AMZN, FB, GOOG and NFLX from 2017 to 2021",
 y = "Annual Returns", x = "") +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
+Here it is easy to see that 2018 was a bad year to Google and Facebook. The year 2020 was good for Amazon and Netflix, and we could be argued to the fact that during the pandemic online shopping and movie platforms increased their sales. 
 
+## Comparative of Annual Returns 
+We can see that AMZN in the FANG database... 
+
+## Cumulative Returns 
+The cumulative returns is the total change in the investment price over a set time. Taking this concept into account we will start by analyzing FANG database.
+```{r}
+#Cumulative Returns FANG database
+FANG_annual_cum_returns <- FANG_annual_returns %>%
+        mutate(cr = 100*cumprod(1 + yearly.returns)) %>%
+#Plot the results
+ggplot(aes(x = date-365, y = cr, fill = symbol)) + geom_col() +
+labs(title = "Yearly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31",
+x = "", y = "USD value at the end of the year", color = "") +
+scale_y_continuous(labels = scales::dollar) +
+facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+theme_tq() + scale_color_tq()
+FANG_annual_cum_returns
+```
 
 ```{r}
-#Cumulative Returns
+#Cumulative Returns 2017-2021
 Stock_AFGN_annual_cum_returns <- Stock_AFGN_annual_returns %>%
 mutate(cr = 100*cumprod(1 + yearly.returns)) %>%
 # Plot the results.
@@ -92,10 +185,36 @@ facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_color_tq()
 Stock_AFGN_annual_cum_returns
 ```
+## Comparative Yearly Cumulative returns
+The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. 
 
+
+Now we modify the code abode to show monthy returns instead of yearly 
+```{r}
+#Monthly returns FANG database
+FANG_monthly_returns <- FANG %>%
+        group_by(symbol)%>%
+        tq_transmute(select = adjusted,
+                     mutate_fun = periodReturn,
+                     period = "monthly", 
+                     type = "arithmetic")
+FANG_monthly_returns
+#Plot the results 
+FANG_monthly_returns %>%
+        ggplot(aes(x= date-12,
+                   y = monthly.returns, fill = symbol)) +
+        geom_col() +
+        geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+        scale_y_continuous(labels = scales::percent) +
+        labs(title = "FANG: Monthly Returns",
+             y = "Monthly Returns", x = "") +
+        facet_wrap(~ symbol, ncol = 2, scales = "free_y") + 
+        theme_tq() + scale_fill_tq()
+```
+We can notice that Google is the most volatile. The plot above reveals how volatile the stocks returns are. Let's compare with the returns from 2017 to 2021.
 
 ```{r}
-# Monthly returns.
+# Monthly returns 2017-2021
 Stock_AFGN_monthly_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
         filter(date>"2016-12-30")%>%
@@ -105,19 +224,51 @@ Stock_AFGN_monthly_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
         type = "arithmetic")
 # Plot the results.
 ggplot(Stock_AFGN_monthly_returns, aes(x = date-12,
-y = monthly.returns, fill = symbol)) +
+        y = monthly.returns, fill = symbol)) +
 geom_col() +
 geom_hline(yintercept = 0, color = palette_light()[[1]]) +
 scale_y_continuous(labels = scales::percent) +
-labs(title = "Amazon, Facebook, Google and Netflix: Monthly Returns", y = "Monthly Returns",
-x = "") +
+labs(title = "Amazon, Facebook, Google and Netflix: Monthly Returns", y = "Monthly Returns", x = "") +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
+## Comparison Monthly Returns
 
-
+# Cumulative Monthly Returns
+Now let's see cumulative monthly returns per stock. First, let's see FANG database
 ```{r}
-# Calculate monthly cumulative returns.
+#Calculate monthly cumulative returns FANG database
+FANG_monthly_cum_returns<- FANG_monthly_returns %>%
+        mutate(cr = 100*cumprod(1 + monthly.returns))
+#Plot the results
+ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr,
+color = symbol)) +
+geom_line(size = 1) +
+labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31",
+x = "", y = "USD value at the end of the year",
+color = "") +
+scale_y_continuous(labels = scales::dollar) +
+theme_tq() + scale_color_tq()
+```
+To facilitate the reading of the plot let's split the plot in four panels. 
+```{r}
+#Plot the results 
+ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr,
+color = symbol)) +
+geom_line(size = 1) +
+labs(title = "Monthly cumulative USD returns.",
+subtitle = "100 USD investment growth from 2013-01-01 to 2016-12-31",
+x = "", y = "USD value at the end of the year",
+color = "") +
+scale_y_continuous(labels = scales::dollar) +
+facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
+theme_tq() + scale_color_tq()
+```
+Investing in Netflix during these 4 years would lead to the highest value of almost 1000 USD. 
+Now let's see the monthly cumulative returns from 2016-12-30 to 2021-07-31
+```{r}
+# Calculate monthly cumulative returns 2016-12-30 to 2021-07-31
 Stock_AFGN_monthly_cum_returns <- Stock_AFGN_monthly_returns %>%
 mutate(cr = 100 * cumprod(1 + monthly.returns))
 # Plot results.
@@ -131,8 +282,7 @@ color = "") +
 scale_y_continuous(labels = scales::dollar) +
 theme_tq() + scale_color_tq()
 ```
-
-
+Now let's split the plot in four panels
 ```{r}
 # Plot results.
 ggplot(Stock_AFGN_monthly_cum_returns, aes(x = date-12, y = cr,
@@ -146,7 +296,34 @@ scale_y_continuous(labels = scales::dollar) +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_color_tq()
 ```
+In this case, 100 USD invested in Amazon or Netflix during these 4 years would lead us to the highest value of almost 500 USD. 
 
+## Comparison Monthly cumulative USD returns
+
+## Distribution of returns 
+An other way to see stock returns is trough density plots. The density plots can show us the distribution of values, this is useful when we are more interested to know the most likely return that the stock can have. 
+Let's visualize first the density plot for the FANG data. 
+````{r}
+#Density plots FANG data
+ggplot(FANG_monthly_returns, aes(x = monthly.returns,
+                                 fill = symbol)) +
+        geom_density(alpha = 0.5) +
+        geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+        labs(title = "FANG: Charting the Monthly Returns",
+             x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+        theme_tq() + scale_fill_tq()
+```
+Let's make it clearer 
+```{r}
+#Density plots
+ggplot(FANG_monthly_returns, aes(x = monthly.returns,
+                                 fill = symbol)) +
+        geom_density(alpha = 0.5) +
+        geom_hline(yintercept = 0, color = palette_light()[[1]]) +
+        labs(title = "FANG: Charting the Monthly Returns",
+             x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
+        theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
+```
 
 ```{r}
 # Density plots.
@@ -170,18 +347,44 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
 ```
+Let's analyze each plot in comparison with the FANG chart Monthly Returns
+AMZN. In the FANG data the most frequent value is around zero. The majority of observations are within -25% and 25%. While in the data from 2016-12-30 to 2021-07-31
+GOOG
+FB 
+NFLX
 
-
-
+To complete our previous analysis let's propose some statistical indicators 
 ```{r}
-# Calculate relevant statistics.
+# Calculate relevant statistics FANG data
+FANG_stats <- FANG_monthly_returns %>%
+summarise(mean = mean(monthly.returns), sd = sd(monthly.returns),
+sr = mean/sd, iqr = IQR(monthly.returns))
+FANG_stats
+```
+We can see that in this case the stock with highest mean is NFLX and the lowest is GOOG. So, the expected return of NFLX is the highest.  
+Let's see the risk of the FANG data in a plot 
+```{r}
+#Mean Variance plot 
+FANG_stats %>%
+        ggplot(aes(x = sd, y = mean, color = symbol)) +
+geom_point(size = 5) +
+geom_text(aes(label = paste0(round(sr, 3))),
+vjust = 2, color = "black", size = 3.5) +
+xlim(0.04, 0.18) + ylim(0.01, 0.06) +
+labs(title = "The higher the risk, the higher the return",
+subtitle = "Numerical values represent return per unit of risk.",
+x = "Risk", y = "Return") + theme_tq()
+```
+Netflix is the stock with the highest return and risk. Now let's compare this results with the data from 2016-12-30 to 2021-07-31
+```{r}
+# Calculate relevant statistics from 2016-12-30 to 2021-07-31
 Stock_AFGN_stats <- Stock_AFGN_monthly_returns %>%
 summarise(mean = mean(monthly.returns), sd = sd(monthly.returns),
 sr = mean/sd, iqr = IQR(monthly.returns))
 Stock_AFGN_stats
 ```
-
-
+In this case, as in the FANG data, the stock with highest mean is NFLX, so the expected return of NFLX is the highest. On the contrary, in this case the lowest mean is FB, so FB expected return is closest to zero. But, the stock with lowest risk is GOOG, because the standard deviation is the lowest.  
+Let's see the risk and return in a plot
 ```{r}
 Stock_AFGN_stats %>%
 ggplot(aes(x = sd, y = mean, color = symbol)) +
@@ -193,6 +396,7 @@ labs(title = "XXXX",
 subtitle = "Numerical values represent return per unit of risk.",
 x = "Risk", y = "Return") + theme_tq()
 ```
+## Comparison 
 
 
 ```{r}
@@ -208,3 +412,4 @@ ggplot(assets, aes(length, fill = asset)) +
 geom_density(alpha = 0.5, adjust = 3)
 ```
 
+## Conclusion 
