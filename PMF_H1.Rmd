@@ -1,13 +1,13 @@
 ---
 title: "Homework assignment 1. Programación y modelación financiera (PMF)"
 author: 
-- name: Lara Weitgasse A00820434
+- name: Lara Weitgasse A01759114
 - name: Karina Albarrán A01377604
 - name: Christian Contreras A00819400
 - name: María Julia Romero A00819400
 - name: Melanie Flores A00820434
 - name: Adriana Beatriz Santos A00823399
-date: "8/29/2021"
+date: "9/8/2021"
 output: pdf_document
 ---
 
@@ -21,6 +21,7 @@ library(tibble)
 library(tbl2xts)
 library(dplyr)
 library(lazyeval)
+library(lubridate)
 ```
 
 ## Asset returns 
@@ -37,7 +38,7 @@ FANG_daily_all <- FANG %>%
   group_by(symbol) %>%
   ggplot(aes(x= date, y= adjusted, color = symbol)) +
   geom_line(size = 1) +
-  labs(title = "Daily stock prices -from 2013-01-02 to 2016-12-30 ",
+  labs(title = "Daily stock prices from 2013-01-02 to 2016-12-30 ",
        x = "", y ="adjusted princes", color = "") +
   scale_y_continuous(labels = scales::dollar) +
   theme_tq() + scale_color_tq()
@@ -129,7 +130,7 @@ FANG_annual_returns %>%
 #Annual returns of Amazon, Facebook, Google and Netflix from 2017 to 2021
 Stock_AFGN_annual_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
-        filter(date>"2016-12-30")%>%
+        filter(date >= as.Date("2016-12-30") & date <= as.Date("2021-07-31"))%>%
         tq_transmute(select = adjusted,
         mutate_fun = periodReturn,
         period = "yearly",
@@ -188,8 +189,8 @@ Stock_AFGN_annual_cum_returns
 ## Comparative Yearly Cumulative returns
 The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. 
 
-
-Now we modify the code abode to show monthy returns instead of yearly 
+## Monthly Returns
+Now we modify the code abode to show monthly returns instead of yearly 
 ```{r}
 #Monthly returns FANG database
 FANG_monthly_returns <- FANG %>%
@@ -217,11 +218,12 @@ We can notice that Google is the most volatile. The plot above reveals how volat
 # Monthly returns 2017-2021
 Stock_AFGN_monthly_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      group_by(symbol) %>%
-        filter(date>"2016-12-30")%>%
+        filter(date >= as.Date("2016-12-30") & date <= as.Date("2021-07-31"))%>%
         tq_transmute(select = adjusted,
         mutate_fun = periodReturn,
         period = "monthly",
         type = "arithmetic")
+Stock_AFGN_monthly_returns
 # Plot the results.
 ggplot(Stock_AFGN_monthly_returns, aes(x = date-12,
         y = monthly.returns, fill = symbol)) +
@@ -232,14 +234,14 @@ labs(title = "Amazon, Facebook, Google and Netflix: Monthly Returns", y = "Month
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
-## Comparison Monthly Returns
+# Comparison Monthly Returns
 
 # Cumulative Monthly Returns
-Now let's see cumulative monthly returns per stock. First, let's see FANG database
+Now let's see cumulative monthly returns per stock if investing 100 USD at the beginning of the period. First, let's look at the four companies between 2013 and 2016 from the FANG database. 
 ```{r}
 #Calculate monthly cumulative returns FANG database
 FANG_monthly_cum_returns<- FANG_monthly_returns %>%
-        mutate(cr = 100*cumprod(1 + monthly.returns))
+        mutate(cr = 100*cumprod(1+ monthly.returns))
 #Plot the results
 ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr,
 color = symbol)) +
@@ -251,7 +253,7 @@ color = "") +
 scale_y_continuous(labels = scales::dollar) +
 theme_tq() + scale_color_tq()
 ```
-To facilitate the reading of the plot let's split the plot in four panels. 
+The above graph would make you presume that Netflix is the best investment in terms of returns, however, to facilitate the reading of the plot it is better to look at every company seperately, therefore, a splitting of the plot in four panels is necessary.
 ```{r}
 #Plot the results 
 ggplot(FANG_monthly_cum_returns, aes(x = date-12, y = cr,
@@ -265,8 +267,9 @@ scale_y_continuous(labels = scales::dollar) +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_color_tq()
 ```
-Investing in Netflix during these 4 years would lead to the highest value of almost 1000 USD. 
-Now let's see the monthly cumulative returns from 2016-12-30 to 2021-07-31
+As can be seen in the above figures, Facebook has been the most stable in the four years of investigation, however shows a downwards trend in the past months. The stock has increased from 100 USD to 410 USD, while Amazon, the stock that also shows a downward trend in the past months, rose to 291 USD. Netflix gives the highest returns of 942 USD between 2013 and 2016, however, also shows high volatility. Similarly, Google shows volatility but does not give as high of returns as the other three companies, with only 214 USD. As a result, the most stable investment would have been Facebook, but the highest return stemmed from Netflix. 
+
+In order to facilitate the comparison of the results to the four and a half years later, plotting of the period 2016-12-30 to 2021-07-31 is imperative. 
 ```{r}
 # Calculate monthly cumulative returns 2016-12-30 to 2021-07-31
 Stock_AFGN_monthly_cum_returns <- Stock_AFGN_monthly_returns %>%
@@ -282,7 +285,7 @@ color = "") +
 scale_y_continuous(labels = scales::dollar) +
 theme_tq() + scale_color_tq()
 ```
-Now let's split the plot in four panels
+This graph already shows a difference to years 2013 to 2016 with the Netflix stock showing less return and the Amazon having grown in cumulative USD monthly returns. Additionally, Facebook performed worse than the period beforehand, while Google has risen its returns. Once again, splitting the plot in four panels displays a better perspective on the different stocks:
 ```{r}
 # Plot results.
 ggplot(Stock_AFGN_monthly_cum_returns, aes(x = date-12, y = cr,
@@ -296,12 +299,16 @@ scale_y_continuous(labels = scales::dollar) +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_color_tq()
 ```
-In this case, 100 USD invested in Amazon or Netflix during these 4 years would lead us to the highest value of almost 500 USD. 
+On July 30, 2021 the four stocks increased the investment of 100 USD on December 30, 2016 to the following monthly cumulative USD returns: Amazon 444 USD, Facebook 310 USD, Google 351 USD and Netflix 418 USD. In this case, the originally 100 USD invested in Amazon or Netflix during the 4 years would lead to the highest returns of 444 USD and 418 USD, respectively. The most stable stock in the investigated time period is Google, while the other three stocks display more volatility. The least return stems from the investment into Facebook as can be seen in the above figures. Google gives higher returns of 41 USD compared to Facebook while it is roughly 70 USD below Netflix. Interestingly, the two stocks showing the least returns, Facebook and Google, are the ones that have an upward trend in the last months of investigation, while the stocks with the highest returns in the period, Amazon and Netflix, display a downward trend.  
 
-## Comparison Monthly cumulative USD returns
+# Comparison of Monthly Cumulative USD Returns (2013-2016 vs 2017-2021)
+When comparing Amazon, Facebook, Google and Netflix in the period 2013-01-02 to 2016-12-30 to the time frame of 2016-12-30 to 2021-07-31 different outcomes can be observed. First of all, Netflix was the forerunner in the first period of investigation, while in the second time frame the stock was in second place behind Amazon. From 2013 to 2016, Netflix's monthly cumulative USD return was at 942 USD, while in the period to 2021, the returns almost halved to 418 USD. The total return in the whole period for the company was therefore 1,360 USD. Secondly, Amazon, the best performing stock in the period 2017 to 2021 with a cumulative monthly return of 444 USD, was third compared to the other FANG stocks between 2013 and 2016 with a cumulative return of 291 USD on the 100 USD investment. As a result, their total cumulative monthly return was 735 USD. Thirdly, Facebook's stock achieved a comparatively high return of 410 USD in the first period, while the returns dropped by 24% to 310 USD in the following time frame. The total return between 2013 and 2021 is therefore 720 USD. Finally, Google, the company that showed the lowest returns of 214 USD up to 2016, increased the returns to 351 USD with an initial investment of 100 USD in the next four years. The company's total returns for the two periods therefore sum up to 565 USD. As a result, the highest total monthly cumulative returns over the whole period 2013 to 2021 had Netflix with 1,360 USD, followed by Amazon with 735 USD, Facebook with 720 USD and Google with 565 USD.
+In terms of volatility, the most stable stock in the first period was Facebook while Google showed the least volatility of the four companies in the last period. Google and Netflix were the stocks that showed an upward trend in the last months of the first period, while Facebook and Google displayed an upward trend in the upcoming months to July 2021.
+To sum up, based on the total monthly cumulative returns of the two periods combined, Netflix would be the best investment. A counterargument could be the current downward trend of the stock, however, as could be seen from the investigation, this company has a rather volatile history.
 
-## Distribution of returns 
-An other way to see stock returns is trough density plots. The density plots can show us the distribution of values, this is useful when we are more interested to know the most likely return that the stock can have. 
+
+# Distribution of Returns 
+Another way to see monthly stock returns is trough density plots. The density plots can show us the distribution of values, which is useful when the objective is to assess the most likely return a stock can have. 
 Let's visualize first the density plot for the FANG data. 
 ````{r}
 #Density plots FANG data
