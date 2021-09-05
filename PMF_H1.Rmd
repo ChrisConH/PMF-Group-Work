@@ -6,7 +6,7 @@ author:
 - name: Christian Contreras A00819400
 - name: María Julia Romero A00819400
 - name: Melanie Flores A00820434
-- name: Adriana Beatriz Santos A00823399
+- name: Adriana Santos A00823399
 date: "9/8/2021"
 output: pdf_document
 ---
