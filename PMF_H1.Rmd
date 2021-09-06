@@ -44,6 +44,7 @@ FANG_daily_all <- FANG %>%
   theme_tq() + scale_color_tq()
 FANG_daily_all
 ```
+
 We can see how stock prices fluctuate in different ranges. Here we still cannot make a decision about the action to prefer since we only can observe the fluctuation of the stock prices. Remember making investment decisions based on prices could be misleading. Besides, we must separate each graph so that we can see more clearly each price evolution. 
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -59,6 +60,7 @@ FANG_daily <- FANG %>%
   theme_tq() + scale_color_tq()
 FANG_daily
 ```
+
 Now that it is more clear we can notice that all stock prices have a positive trend over time, but 2014 was a little bad for Amazon, Google and Netflix. Let's compare our plot with the daily stock prices from 2016-12-30 to 2021-07-31.
 
 ## From prices to returns from 2016-12-30 to 2021-07-31 
@@ -77,6 +79,7 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      theme_tq() + scale_color_tq()
 Stock_AFGN
 ```
+
 As this plot distorts the perspective on the stock market of the four companies, the next plot shows the four companies separated in order to make comparisons easier and valuable.
 
 ```{r, echo=FALSE, warning=FALSE}
@@ -93,6 +96,7 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
      theme_tq() + scale_color_tq()
 Stock_AFGN
 ```
+
 The above plot has the strength of showing the companies separated, however, to make a good comparison, it is important to look at annual returns which will be shown later. It is also important to emphasize, that in a period of 2020 there was a decline in the stock prices of Amazon, Google, Facebook and Netflix. This is because the stock price decreases by the announcement of the pandemic, approximately in March, which is when we can see the decrease in prices. Notwithstanding the pandemic, the four companies recovered. 
 
 ## Comparison from prices to returns 
@@ -199,7 +203,7 @@ Stock_AFGN_annual_cum_returns
 The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. 
 
 ## Monthly Returns
-Now we modify the code abode to show monthly returns instead of yearly 
+In order to get a more detailed picture of the four companies compared to yearly, monthly returns will be presented in this chapter. First of all, the monthly returns of Amazon, Facebook, Google and Netflix in the time period of 2013 to 2016 will be regarded.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Monthly returns FANG database
@@ -223,7 +227,7 @@ FANG_monthly_returns %>%
         theme_tq() + scale_fill_tq()
 ```
 
-We can notice that Google is the most volatile. The plot above reveals how volatile the stocks returns are. Let's compare with the returns from 2017 to 2021.
+The reason of plotting these monthly returns in this manner is to reveal the volatility of the stock returns. It can be noticed that Amazon and Google are rather volatile since at some point they jump from a high positive to a negative return. Netflix reached a maximum negative of -21%. In order to visualize and compare the results with the following period, the graphs for the time frame 2017 to 2021 follow.
 
 ```{r,echo=FALSE, warning=FALSE}
 # Monthly returns 2017-2021
@@ -246,10 +250,12 @@ facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
 
+As can be concluded from these figures, the stocks of Amazon, Facebook and Google seem to be very volatile with a lot of negative returns. It can also be seen that Amazon and Netflix have the highest negatives with both reaching -20.22% and 19.34%, respectively.
 # Comparison Monthly Returns
+A first comparison of monthly returns can be drawn from the above presented graphs that show the volatility of the four stocks. In the period 2013 to 2016, Amazon and Google seem volatile and record lows could be observed from the Netflix stock while from 2017 to 2021, the three stocks Amazon, Facebook and Google seem to be very volatile, however, Amazon and Netflix have the highest negatives. The graphs show a first overview of the monthly returns, however, for closer investigation and in order to draw better, more exact conclusions, further steps are necessary. Therefore, cumulative monthly returns will be analized in the next chapter.
 
 # Cumulative Monthly Returns
-Now let's see cumulative monthly returns per stock if investing 100 USD at the beginning of the period. First, let's look at the four companies between 2013 and 2016 from the FANG database. 
+Cumulative monthly returns per stock, under the presumption of investing 100 USD at the beginning of the period, are regarded in the next graphs. First of all, the period between 2013 and 2016 will be visualized. 
 
 ```{r,echo=FALSE, warning=FALSE}
 #Calculate monthly cumulative returns FANG database
@@ -267,7 +273,7 @@ scale_y_continuous(labels = scales::dollar) +
 theme_tq() + scale_color_tq()
 ```
 
-The above graph would make you presume that Netflix is the best investment in terms of returns, however, to facilitate the reading of the plot it is better to look at every company seperately, therefore, a splitting of the plot in four panels is necessary.
+The above graph would make one presume that Netflix is the best investment in terms of returns, however, to facilitate the reading of the plot it is better to look at every company separately, therefore, a splitting of the plot in four panels is necessary.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Plot the results 
@@ -282,9 +288,11 @@ scale_y_continuous(labels = scales::dollar) +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_color_tq()
 ```
+
 As can be seen in the above figures, Facebook has been the most stable in the four years of investigation, however shows a downwards trend in the past months. The stock has increased from 100 USD to 410 USD, while Amazon, the stock that also shows a downward trend in the past months, rose to 291 USD. Netflix gives the highest returns of 942 USD between 2013 and 2016, however, also shows high volatility. Similarly, Google shows volatility but does not give as high of returns as the other three companies, with only 214 USD. As a result, the most stable investment would have been Facebook, but the highest return stemmed from Netflix. 
 
 In order to facilitate the comparison of the results to the four and a half years later, plotting of the period 2016-12-30 to 2021-07-31 is imperative. 
+
 ```{r,echo=FALSE, warning=FALSE}
 # Calculate monthly cumulative returns 2016-12-30 to 2021-07-31
 Stock_AFGN_monthly_cum_returns <- Stock_AFGN_monthly_returns %>%
@@ -301,7 +309,7 @@ scale_y_continuous(labels = scales::dollar) +
 theme_tq() + scale_color_tq()
 ```
 
-This graph already shows a difference to years 2013 to 2016 with the Netflix stock showing less return and the Amazon having grown in cumulative USD monthly returns. Additionally, Facebook performed worse than the period beforehand, while Google has risen its returns. Once again, splitting the plot in four panels displays a better perspective on the different stocks:
+This graph already shows a difference to the years 2013 to 2016 with the Netflix stock showing less return and the Amazon having grown in cumulative USD monthly returns. Additionally, Facebook performed worse than the period beforehand, while Google has risen its returns. Once again, splitting the plot in four panels displays a better perspective on the different stocks:
 
 ```{r,echo=FALSE, warning=FALSE}
 # Plot results.
@@ -326,7 +334,7 @@ To sum up, based on the total monthly cumulative returns of the two periods comb
 
 
 # Distribution of Returns 
-Another way to see monthly stock returns is trough density plots. The density plots can show us the distribution of values, which is useful when the objective is to assess the most likely return a stock can have. 
+Another way to see monthly stock returns is through density plots. The density plots can show us the distribution of values, which is useful when the objective is to assess the most likely return a stock can have. 
 Let's visualize first the density plot for the FANG data. 
 
 ````{r,echo=FALSE, warning=FALSE}
