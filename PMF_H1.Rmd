@@ -371,7 +371,7 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq()
 ```
-
+With the density graph above, we can get a scope of the average monthly returns on the stocks, we can appreciate that NFLX have had better returns than the other stocks, but also is the stock with more volatility, sometimes with returns around 40%, with this insights we can confirm that usually return and risk have a positive correlation (i.e., greater the risk, greater could be the return), but even if this is a generality in the financial markets, there are better ways to measure the relation between risk and return, such as the risk adjusted performance measures. Soon we will get to that point.
 
 ```{r,echo=FALSE, warning=FALSE}
 # Density plots.
@@ -383,14 +383,9 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
 ```
+Now that we have density comparisons of the returns on the stocks between 2013 to 2016 and 2016 to 2021,let's analyze each plot. We could say that NFLX had more volatility in the first period (2013-2016) than in the second one (2017-2021), while the other stocks had remain with a very similar behavior in both periods, being GOOG the less volatile stock, AMZN and FB with a similar density distribution between them, and NFLX keeping the first place in terms of volatility and return.
 
-Let's analyze each plot in comparison with the FANG chart Monthly Returns
-AMZN. In the FANG data the most frequent value is around zero. The majority of observations are within -25% and 25%. While in the data from 2016-12-30 to 2021-07-31
-GOOG
-FB 
-NFLX
-
-To complete our previous analysis let's propose some statistical indicators 
+To complete our previous analysis let's propose some statistical indicators in order to get to a risk adjusted performance analysis approach. 
 
 ```{r,echo=FALSE, warning=FALSE}
 # Calculate relevant statistics FANG data
@@ -411,7 +406,7 @@ geom_point(size = 5) +
 geom_text(aes(label = paste0(round(sr, 3))),
 vjust = 2, color = "black", size = 3.5) +
 xlim(0.04, 0.18) + ylim(0.01, 0.06) +
-labs(title = "The higher the risk, the higher the return",
+labs(title = "The higher the risk, the higher the return (2013-2016)",
 subtitle = "Numerical values represent return per unit of risk.",
 x = "Risk", y = "Return") + theme_tq()
 ```
@@ -435,13 +430,13 @@ ggplot(aes(x = sd, y = mean, color = symbol)) +
 geom_point(size = 5) +
 geom_text(aes(label = paste0(round(sr, 3))),
 vjust = 2, color = "black", size = 3.5) +
-xlim(0.04, 0.18) + ylim(0.01, 0.06) +
-labs(title = "XXXX",
+xlim(0.04, 0.11) + ylim(0.01, 0.04) +
+labs(title = "The higher the risk, the higher the return (2017-2021)",
 subtitle = "Numerical values represent return per unit of risk.",
 x = "Risk", y = "Return") + theme_tq()
 ```
 
-## Comparison 
+Now that we have a risk adjusted performance measure such as sharpe ratio, we can get deeper insights. In the first period, NFLX over performed the other stocks quite significantly and we can see it visually in the graph, the NFLX sharpe ratio is not equidistant between the other ones, this matches with the idea that NFLX have had a lot of volatility over the first period, but also delivering high returns according to its level of risk. In the second period, The sharpe ratios had changed, and now the Stock delivering better risk adjusted performance is GOOG. If we observe the first period again, we could note that if you connect the dots of all the stocks, they create a kind of a slope, the interpretation could be that risk and return between all the stocks are proportional between each other. In the second graph the relation between risk and return is not proportional, this means there are stocks offering better returns in terms of their risk such as GOOG and AMZN. NFLX and AMZN offered almost the same return but NFLX with a greater volatility, and GOOG had offer a better return than FB with less volatility. Now that we have this insights is quite more easy to compare the performance of the stocks.
 
 
 ```{r,echo=FALSE, warning=FALSE}
@@ -458,3 +453,4 @@ geom_density(alpha = 0.5, adjust = 3)
 ```
 
 ## Conclusion 
+Now that we have several information about the performance of the stocks over two different periods, we could imply that the best decision would've been to invest from 2013 to 2016 in NFLX stock, while during 2017 to 2021, the best decision would've been to invest in AMZN. As we mention before, in the financial markets there is a relation between risk and return, risk is measured in terms of volatility which is the standard deviation of the returns, and the returns are measured in terms of the relative changes in the stock prices over time. As we can see in the graph above, a riskier asset will give you better chances of having better returns, but, also more probabilities of losing money, while a less risky asset may provide you with smaller returns but also with less probability of losing money. Every investor should know their risk aversion and in order to that, take their investment decisions based on financial analysis. The conclusion is simple, if you want to earn big, you need to be willing to also lose sometimes, but if you make a deep analysis that provides you with useful information, you can decrease those probabilities of losing and increase the ones of winning.
