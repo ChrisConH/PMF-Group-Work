@@ -4,7 +4,7 @@ author:
   - Lara Hanna Weitgasser A01759114
   - Karina Albarrán A01377604
   - Christian Contreras A00819400
-  - María Julia Romero A00819400
+  - María Julia Romero A01114404
   - Melanie Flores A00820434
   - Adriana Beatriz Santos Monterroza A00823399
 date: "9/8/2021"
