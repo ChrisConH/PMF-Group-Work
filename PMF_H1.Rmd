@@ -252,7 +252,9 @@ theme_tq() + scale_fill_tq()
 
 As can be concluded from these figures, the stocks of Amazon, Facebook and Google seem to be very volatile with a lot of negative returns. It can also be seen that Amazon and Netflix have the highest negatives with both reaching -20.22% and 19.34%, respectively.
 # Comparison Monthly Returns
-A first comparison of monthly returns can be drawn from the above presented graphs that show the volatility of the four stocks. In the period 2013 to 2016, Amazon and Google seem volatile and record lows could be observed from the Netflix stock while from 2017 to 2021, the three stocks Amazon, Facebook and Google seem to be very volatile, however, Amazon and Netflix have the highest negatives. The graphs show a first overview of the monthly returns, however, for closer investigation and in order to draw better, more exact conclusions, further steps are necessary. Therefore, cumulative monthly returns will be analized in the next chapter.
+The comparison between this two periods, the first one is for 2013-2017 and this is for 2017-2021, we can see how volatility is higher in this last period, it can be for many causes, one of them that is very important is the pandemic factor that came to disturb many business. In that order we can say that in this last four charts we have atypical years, in contrast with the last period that is a more normal and have constant returns; but even though the volatility of this period it still giving returns, for more risk, greater returns. 
+
+Therefore, cumulative monthly returns will be analized in the next chapter.
 
 # Cumulative Monthly Returns
 Cumulative monthly returns per stock, under the presumption of investing 100 USD at the beginning of the period, are regarded in the next graphs. First of all, the period between 2013 and 2016 will be visualized. 
@@ -383,7 +385,7 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
 ```
-Now that we have density comparisons of the returns on the stocks between 2013 to 2016 and 2016 to 2021,let's analyze each plot. We could say that NFLX had more volatility in the first period (2013-2016) than in the second one (2017-2021), while the other stocks had remain with a very similar behavior in both periods, being GOOG the less volatile stock, AMZN and FB with a similar density distribution between them, and NFLX keeping the first place in terms of volatility and return.
+Let's analyze each plot in comparison with the FANG chart Monthly Returns from this two periods,as first instant we could say that GOOG is the one that gives me more return in both periods, but if we analize it carefully we can see that the distribution of NFLX is more spread in our graphic than the others, in that case we can say that this stock is riskier than the other three. Also we can see a clear contrast between this two periods that is the way that the density of the stocks is higher than the last period. With all that being said, we can conclude that GOOG is the safest stock, because is the most stable one that has less movements around the period. Here know its the investors call to choose which stock is better for them, if they want to get higher return, they should go for the one who has more risk, but if they feel a little afraid of the risk and want to play it safer, they should go for GOOG because is the one that has lees changes andh give us less risk, than the other ones. 
 
 To complete our previous analysis let's propose some statistical indicators in order to get to a risk adjusted performance analysis approach. 
 
