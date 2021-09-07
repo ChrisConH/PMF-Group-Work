@@ -1,12 +1,12 @@
 ---
 title: "Homework assignment 1. Programación y modelación financiera (PMF)"
 author: 
-- name: Lara Hanna Weitgasser A01759114
-- name: Karina Albarrán A01377604
-- name: Christian Contreras A00819400
-- name: María Julia Romero A00819400
-- name: Melanie Flores A00820434
-- name: Adriana Beatriz Santos Monterroza A00823399
+  - Lara Hanna Weitgasser A01759114
+  - Karina Albarrán A01377604
+  - Christian Contreras A00819400
+  - María Julia Romero A00819400
+  - Melanie Flores A00820434
+  - Adriana Beatriz Santos Monterroza A00823399
 date: "9/8/2021"
 output: pdf_document
 ---
