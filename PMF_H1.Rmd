@@ -438,6 +438,7 @@ x = "Risk", y = "Return") + theme_tq()
 
 Now that we have a risk adjusted performance measure such as sharpe ratio, we can get deeper insights. In the first period, NFLX over performed the other stocks quite significantly and we can see it visually in the graph, the NFLX sharpe ratio is not equidistant between the other ones, this matches with the idea that NFLX have had a lot of volatility over the first period, but also delivering high returns according to its level of risk. In the second period, The sharpe ratios had changed, and now the Stock delivering better risk adjusted performance is GOOG. If we observe the first period again, we could note that if you connect the dots of all the stocks, they create a kind of a slope, the interpretation could be that risk and return between all the stocks are proportional between each other. In the second graph the relation between risk and return is not proportional, this means there are stocks offering better returns in terms of their risk such as GOOG and AMZN. NFLX and AMZN offered almost the same return but NFLX with a greater volatility, and GOOG had offer a better return than FB with less volatility. Now that we have this insights is quite more easy to compare the performance of the stocks.
 
+
 ```{r,echo=FALSE, warning=FALSE}
 # Create random assets.
 less_risky <- data.frame(length = rnorm(10000, 0, 1))
