@@ -100,7 +100,7 @@ We can notice that from 2013-01-02 to 2016-12-30 compare to new data from 2016-1
 As mentioned above, we can't make a decision based solely on price, but we can visualize the data to help us to compare the evolution of price per stock. 
 
 ## Yearly Returns
-To make a good and inform decision we need the asset returns. So, we select the adjusted prices and transform it into yearly returns. First we are going to analyze FANG database.
+To make the best decision we must analyze the asset returns. So, we selected the adjusted prices and transformed them into yearly returns. First, we are going to analyze FANG database.
 ```{r,echo=FALSE, warning=FALSE}
 #Yearly returns FANG database
 FANG_annual_returns <- FANG %>%
@@ -111,6 +111,7 @@ FANG_annual_returns <- FANG %>%
                      type = "arithmetic")
 FANG_annual_returns
 ```
+The annual table shows the specific return for each company.In 2013 the highest return for FB an NFLX was registered and in 2015 was for AMZN and GOOG. Due to the fact that we can analyze the exact amount of return, we confirm that NFLX gives the highest return of all companies. The company gives returns of 3 and 1.34 every two years.Additionally, FB was dropping each year due to the fact that 2013 was the IPO and the company was emerging the application for mobile use.
 Now, the next chunk code shows how to visualize the annual returns in a plot
 ``` {r,echo=FALSE, warning=FALSE}
 #Plot tha annual returns FANG database
@@ -124,7 +125,9 @@ FANG_annual_returns %>%
         facet_wrap(~ symbol, ncol = 2, scales = "free_y") + 
         theme_tq() + scale_fill_tq()
 ```
-2014 was indeed the worst year for Amazon, Google and Netflix. Now, lets see the annual returns from 2016-12-30 to 2021-07-31. 
+The plots help visualize the returns from a broader approach. The worst year for most of the companies was 2014, AMZN, GOOG and NFLX.We can deduce this was due to the exaggerated valuation of the FANG which led to a financial bubble. On Fb´s plot, we can clearly see how the returns are decreasing exponentially each year going from 95% in 2013 up to 9% in 2016. Additionally, we can visualize the pattern presented in the remaining companies which consists in increasing and decreasing returns. However the lowest returns are considerably smaller than the highest ones. On one side Amazon starts with a pattern of 54%, -22%, 117% and 10%, having it´s highest return in 2015.On the other side we have GOOG and NFLX with the same pattern having their highest return in 2013, their lowest and negative return in 2014, followed by a positive yet lower return and ending in 2016 with a positive but incredibly low return.
+
+Now, lets see the annual returns from 2016-12-30 to 2021-07-31. 
 
 ```{r,echo=FALSE, warning=FALSE}
 #Annual returns of Amazon, Facebook, Google and Netflix from 2017 to 2021
@@ -138,6 +141,8 @@ Stock_AFGN_annual_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
 
 Stock_AFGN_annual_returns
 ```
+Comparing returns from 2013 to 2016 against the goes presented from 2017 to 2021, we can see how returns were stabilizing, being significantly lower. NFLX still remains as one of the companies with the highest returns with a 67% in 2020.Nevertheless, the company is the most volatile on the returns given, starting with 55% in 2017, decreasing returns on 2018-2019 up to 20%, increasing them to almost 70% in 2020 and currently having decrease and negative return of -4%. AMZN surprised us during the pandemic being the one who presented the highest return of all in 2020 with 76%. The company was decreasing starting 2017 with 55% up to 23% in 2019. Even though different crisis were presented throughout the years 2017 to 2021, the companies still remained mainly giving positive returns.
+
 Now, the next chunk code shows how to visualize the annual returns from 2017 to 2021 in a plot
 ```{r,echo=FALSE, warning=FALSE}
 Stock_AFGN_annual_returns %>%
@@ -150,11 +155,11 @@ y = "Annual Returns", x = "") +
 facet_wrap(~ symbol, ncol = 2, scales = "free_y") +
 theme_tq() + scale_fill_tq()
 ```
-Here it is easy to see that 2018 was a bad year to Google and Facebook. The year 2020 was good for Amazon and Netflix, and we could be argued to the fact that during the pandemic online shopping and movie platforms increased their sales. 
+Here it is easy to visualize that 2018 was not the best year for Google and Facebook. FB annual returns decreased tremendously in 2018 due to the social array problems the company had.Data privacy was hacked that year with a bug software giving access to photos of millions of users.We can see how in 2019 this problems were fixed and public image of the company was fixed, increasing their returns from -25% in 2018 to 56% in 2019. Meaning the company increased 81% on their returns from 2018 to 2019. On the other hand,the year 2020 was the best for Amazon and Netflix, and we could assume that during the pandemic online shopping and movie platforms increased their sales. Both companies follow the same pattern, starting 2017 with 55% both and decreasing it to 20% for 2019, giving their highest peak in 2020 with approximately 20% and currently giving returns lower up to 2% and -4%.
 
-## Comparative of Annual Returns 
-We can see that AMZN in the FANG database... 
-
+## Comparative of Annual Returns (2013-2016 vs 2017-2021)
+Comparing the outcomes from the FANG database we come up with the following results. First of all, NFLX was the company with the highest return in the period 2013-2016 with 300% at their highest; yet on the period 2017-2021, AMZN became the highest with an 80% of annual return in 2020 compared to NFLX with 60% as their highest in that period.However, the best performing stock of all was NFLX since their returns remain positive for almost all of the years, except in 2014 with -7% and 2021 with -4%, which is significantly better in comparison to GOOG, AMZN and FB negative returns. The worst performing company was FB.During 2013-2016 the company decreased their annual returns from 95% to 9%; and on the next period 2017-2021, the company experienced the lowest annual return of all with a negative return of -25%. As mentioned before, GOOG and AMZN remained on the same pattern which makes them the least volatile companies in the FANG. Their annual returns remained mainly positive for both periods; yet, during 2017-2021 AMZN did not present negative returns being 2% their lowest and GOOG remained on the same range with -1% as their lowest on the same period of time.
+In addition to, NFLX was the company with the highest yearly cumulative return in USD with over 750 usd in 2016 and over 400 usd in 2020. Following with AMZN and FB, which AMZN had the second highest during 2013-2016 and FB during 2017-2021. Leaving AMZN as the least company in investment growth. With that being said, the best option is NFLX. The company performed the best in yearly investment growth and in annual returns.
 ## Cumulative Returns 
 The cumulative returns is the total change in the investment price over a set time. Taking this concept into account we will start by analyzing FANG database.
 ```{r,echo=FALSE, warning=FALSE}
@@ -187,7 +192,7 @@ theme_tq() + scale_color_tq()
 Stock_AFGN_annual_cum_returns
 ```
 ## Comparative Yearly Cumulative returns
-The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. 
+The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. NFLX had their highest peak in 2015 and 2016 with approximately 750 usd;however, from 2016 to 2020 their highest peak was on 2020 with 450 usd in investment growth. FB, AMZN and GOOG graphs remained in the same parameters of growth. FB with a highest peak of 400 usd in 2016 and 300 usd in 2021, GOOG with 200 usd in 2016 and 300 usd in 2021, and AMZN with 300 usd in 2016 and 400 usd in 2021. For their lowest values, the three companies presented 100 usd as their lowest point in both of the periods established (2013-2016 vs 2017-2021). 
 
 ## Monthly Returns
 Now we modify the code abode to show monthly returns instead of yearly 
