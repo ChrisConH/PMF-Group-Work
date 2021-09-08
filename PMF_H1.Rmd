@@ -26,11 +26,10 @@ library(lubridate)
 
 ## Asset returns 
 As we know, a return is the percentage change of an asset price.It turns out that asset returns exhibit more attractive statistical properties than asset prices themselves.  In finance, it is very important to know the asset returns because our primary goal of investing in a financial market is to make profits without taking excessive risks. 
-Now, let's proceed with our analysis. The original FANG database
-from 2013-01-02 to 2016-12-30 will be compared with the analyzed results from 2016-12-30 to 2021-07-31. 
+For this analysis the original FANG database will be used which shows the stock prices for Amazon, Facebook, Google and Netflix from 2013-01-02 to 2016-12-30. This database will be compared with the results for the same four companies, however, for the period 2016-12-30 to 2021-07-31. 
 
 ## From prices tu returns FANG database
-First, we need a visual representation of the FANG database. In this part we have daily stock prices per stock. 
+First, a visual representation of the FANG database is needed. In this part daily stock prices per stock are presented. 
 
 ```{r, echo=FALSE, warning=FALSE}
 #Plot the data FANG data
@@ -45,7 +44,7 @@ FANG_daily_all <- FANG %>%
 FANG_daily_all
 ```
 
-We can see how stock prices fluctuate in different ranges. Here we still cannot make a decision about the action to prefer since we only can observe the fluctuation of the stock prices. Remember making investment decisions based on prices could be misleading. Besides, we must separate each graph so that we can see more clearly each price evolution. 
+It can be seen how stock prices fluctuate in different ranges. Nevertheless, based on the graph on its own, it is not possible to make a decision about the stock to be preferred since one can only observe the fluctuations of the stock prices. It is important to remember to make investment decisions based on prices could be misleading. Besides, each graph must separated so that price evolution can be clearly observed.
 
 ```{r, echo=FALSE, warning=FALSE}
 #Facet makes it easier to read
@@ -61,10 +60,10 @@ FANG_daily <- FANG %>%
 FANG_daily
 ```
 
-Now that it is more clear we can notice that all stock prices have a positive trend over time, but 2014 was a little bad for Amazon, Google and Netflix. Let's compare our plot with the daily stock prices from 2016-12-30 to 2021-07-31.
+Now that it is more clear one can notice that all stock prices have a positive trend over time, but 2014 was a slightly worse for Amazon, Google and Netflix. In a next step, these results will be compared to the daily stock prices from 2016-12-30 to 2021-07-31.
 
 ## From prices to returns from 2016-12-30 to 2021-07-31 
-At first we loaded and plotted the data for the four companies Amazon, Facebook, Google and Netflix for the timeframe 2016-12-30 to 2021-07-31 in order to compare them to the FANG dataset that ends in 2016.
+At first the data was loaded and plotted for the four companies Amazon, Facebook, Google and Netflix for the time frame 2016-12-30 to 2021-07-31 in order to compare them to the FANG dataset that ends in 2016.
 
 ```{r, echo=FALSE, warning=FALSE}
 #Plot: Amazon, Facebook, Google and Netflix 2016-12-30 to 2021-07-31
@@ -80,7 +79,7 @@ Stock_AFGN <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
 Stock_AFGN
 ```
 
-As this plot distorts the perspective on the stock market of the four companies, the next plot shows the four companies separated in order to make comparisons easier and valuable.
+As this plot distorts the perspective on the stock market of the four companies, as in the first step, the next plot shows the four companies separated in order to make comparisons easier and more valuable.
 
 ```{r, echo=FALSE, warning=FALSE}
 #Amazon, Facebook, Google and Netflix 2016-12-30 to 2021-07-31
@@ -99,13 +98,13 @@ Stock_AFGN
 
 The above plot has the strength of showing the companies separated, however, to make a good comparison, it is important to look at annual returns which will be shown later. It is also important to emphasize, that in a period of 2020 there was a decline in the stock prices of Amazon, Google, Facebook and Netflix. This is because the stock price decreases by the announcement of the pandemic, approximately in March, which is when we can see the decrease in prices. Notwithstanding the pandemic, the four companies recovered. 
 
-## Comparison from prices to returns 
-We can notice that from 2013-01-02 to 2016-12-30 compare to new data from 2016-12-30 to 2021-07-31, the prices of all four companies has grown significantly. In both cases, we could say that we prefer Amazon or Google because they have larger price changes compared with Facebook or Netflix, but this would be a mistake. On the other hand, Google in the new data from 2016-12-30 to 2021-07-31 compare to the FANG database had sustained growth, in other words we can say that it had growth without much volatility as Netflix.  
-As mentioned above, we can't make a decision based solely on price, but we can visualize the data to help us to compare the evolution of price per stock. 
+## Comparison from Prices to Returns 
+It can be noticed that from 2013-01-02 to 2016-12-30 compared to the new data from 2016-12-30 to 2021-07-31, the prices of all four companies have grown significantly. In both cases, we could say that we prefer Amazon or Google because they have larger price changes compared with Facebook or Netflix, but this would be a mistake. On the other hand, Google in the new data from 2016-12-30 to 2021-07-31 compare to the FANG database had sustained growth, in other words we can say that it had grown without much volatility as Netflix.  
+As mentioned above, a decision cannot be made based solely on prices, but it can visualize the data to help us to compare the evolution of price per stock. 
 
 ## Yearly Returns
 
-To make the best decision we must analyze the asset returns. So, we selected the adjusted prices and transformed them into yearly returns. First, we are going to analyze FANG database.
+To make the best decision we must analyze the asset returns. Therefore, the adjusted prices were selected and transformed into yearly returns. First, the FANG database will be analyzed.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Yearly returns FANG database
@@ -119,8 +118,7 @@ FANG_annual_returns
 ```
 
 The annual table shows the specific return for each company.In 2013 the highest return for FB an NFLX was registered and in 2015 was for AMZN and GOOG. Due to the fact that we can analyze the exact amount of return, we confirm that NFLX gives the highest return of all companies. The company gives returns of 3 and 1.34 every two years.Additionally, FB was dropping each year due to the fact that 2013 was the IPO and the company was emerging the application for mobile use.
-
-Now, the next chunk code shows how to visualize the annual returns in a plot
+Now, the next chunk code shows how to visualize the annual returns in a plot.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Plot tha annual returns FANG database
@@ -135,7 +133,7 @@ FANG_annual_returns %>%
         theme_tq() + scale_fill_tq()
 ```
 
-The plots help visualize the returns from a broader approach. The worst year for most of the companies was 2014, AMZN, GOOG and NFLX.We can deduce this was due to the exaggerated valuation of the FANG which led to a financial bubble. On Fb´s plot, we can clearly see how the returns are decreasing exponentially each year going from 95% in 2013 up to 9% in 2016. Additionally, we can visualize the pattern presented in the remaining companies which consists in increasing and decreasing returns. However the lowest returns are considerably smaller than the highest ones. On one side Amazon starts with a pattern of 54%, -22%, 117% and 10%, having it´s highest return in 2015.On the other side we have GOOG and NFLX with the same pattern having their highest return in 2013, their lowest and negative return in 2014, followed by a positive yet lower return and ending in 2016 with a positive but incredibly low return.
+The plots help visualize the returns from a broader approach. The worst year for most of the companies was 2014, AMZN, GOOG and NFLX.We can deduce this was due to the exaggerated valuation of the FANG which led to a financial bubble. On Facebook's plot, we can clearly see how the returns are decreasing exponentially each year going from 95% in 2013 up to 9% in 2016. Additionally, we can visualize the pattern presented in the remaining companies which consists in increasing and decreasing returns. However the lowest returns are considerably smaller than the highest ones. On one side Amazon starts with a pattern of 54%, -22%, 117% and 10%, having it´s highest return in 2015.On the other side we have GOOG and NFLX with the same pattern having their highest return in 2013, their lowest and negative return in 2014, followed by a positive yet lower return and ending in 2016 with a positive but incredibly low return.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Annual returns of Amazon, Facebook, Google and Netflix from 2017 to 2021
@@ -150,9 +148,9 @@ Stock_AFGN_annual_returns <- tq_get(c("AMZN","FB","GOOG","NFLX"))%>%
 Stock_AFGN_annual_returns
 ```
 
-Comparing returns from 2013 to 2016 against the goes presented from 2017 to 2021, we can see how returns were stabilizing, being significantly lower. NFLX still remains as one of the companies with the highest returns with a 67% in 2020.Nevertheless, the company is the most volatile on the returns given, starting with 55% in 2017, decreasing returns on 2018-2019 up to 20%, increasing them to almost 70% in 2020 and currently having decrease and negative return of -4%. AMZN surprised us during the pandemic being the one who presented the highest return of all in 2020 with 76%. The company was decreasing starting 2017 with 55% up to 23% in 2019. Even though different crisis were presented throughout the years 2017 to 2021, the companies still remained mainly giving positive returns.
+Comparing returns from 2013 to 2016 against the ones presented from 2017 to 2021, we can see how returns were stabilizing, being significantly lower. NFLX still remains as one of the companies with the highest returns with a 67% in 2020.Nevertheless, the company is the most volatile on the returns given, starting with 55% in 2017, decreasing returns on 2018-2019 up to 20%, increasing them to almost 70% in 2020 and currently having decrease and negative return of -4%. AMZN surprised us during the pandemic being the one who presented the highest return of all in 2020 with 76%. The company was decreasing starting 2017 with 55% up to 23% in 2019. Even though different crisis were presented throughout the years 2017 to 2021, the companies still remained mainly giving positive returns.
 
-Now, the next chunk code shows how to visualize the annual returns from 2017 to 2021 in a plot
+Now, the next chunk code shows how to visualize the annual returns from 2017 to 2021 in a plot.
 
 ```{r,echo=FALSE, warning=FALSE}
 Stock_AFGN_annual_returns %>%
@@ -169,11 +167,12 @@ theme_tq() + scale_fill_tq()
 Here it is easy to visualize that 2018 was not the best year for Google and Facebook. FB annual returns decreased tremendously in 2018 due to the social array problems the company had.Data privacy was hacked that year with a bug software giving access to photos of millions of users.We can see how in 2019 this problems were fixed and public image of the company was fixed, increasing their returns from -25% in 2018 to 56% in 2019. Meaning the company increased 81% on their returns from 2018 to 2019. On the other hand,the year 2020 was the best for Amazon and Netflix, and we could assume that during the pandemic online shopping and movie platforms increased their sales. Both companies follow the same pattern, starting 2017 with 55% both and decreasing it to 20% for 2019, giving their highest peak in 2020 with approximately 20% and currently giving returns lower up to 2% and -4%.
 
 
-## Comparative of Annual Returns (2013-2016 vs 2017-2021)
-Comparing the outcomes from the FANG database we come up with the following results. First of all, NFLX was the company with the highest return in the period 2013-2016 with 300% at their highest; yet on the period 2017-2021, AMZN became the highest with an 80% of annual return in 2020 compared to NFLX with 60% as their highest in that period.However, the best performing stock of all was NFLX since their returns remain positive for almost all of the years, except in 2014 with -7% and 2021 with -4%, which is significantly better in comparison to GOOG, AMZN and FB negative returns. The worst performing company was FB.During 2013-2016 the company decreased their annual returns from 95% to 9%; and on the next period 2017-2021, the company experienced the lowest annual return of all with a negative return of -25%. As mentioned before, GOOG and AMZN remained on the same pattern which makes them the least volatile companies in the FANG. Their annual returns remained mainly positive for both periods; yet, during 2017-2021 AMZN did not present negative returns being 2% their lowest and GOOG remained on the same range with -1% as their lowest on the same period of time.
+## Comparison of Annual Returns (2013-2016 vs 2017-2021)
+Comparing the outcomes from the FANG database the following conclusions can be drawn. First of all, NFLX was the company with the highest return in the period 2013-2016 with 300% at their highest; yet on the period 2017-2021, AMZN became the highest with an 80% of annual return in 2020 compared to NFLX with 60% as their highest in that period.However, the best performing stock of all was NFLX since their returns remain positive for almost all of the years, except in 2014 with -7% and 2021 with -4%, which is significantly better in comparison to GOOG, AMZN and FB negative returns. The worst performing company was FB. During 2013-2016 the company decreased their annual returns from 95% to 9%; and on the next period 2017-2021, the company experienced the lowest annual return of all with a negative return of -25%. As mentioned before, GOOG and AMZN remained on the same pattern which makes them the least volatile companies in the FANG. Their annual returns remained mainly positive for both periods; yet, during 2017-2021 AMZN did not present negative returns being 2% their lowest and GOOG remained on the same range with -1% as their lowest on the same period of time.
 In addition to, NFLX was the company with the highest yearly cumulative return in USD with over 750 usd in 2016 and over 400 usd in 2020. Following with AMZN and FB, which AMZN had the second highest during 2013-2016 and FB during 2017-2021. Leaving AMZN as the least company in investment growth. With that being said, the best option is NFLX. The company performed the best in yearly investment growth and in annual returns.
+
 ## Cumulative Returns 
-The cumulative returns is the total change in the investment price over a set time. Taking this concept into account we will start by analyzing FANG database.
+The cumulative returns are the total changes in the investment price over a set time. Taking this concept into account, the first analysis will focus on the FANG dataset.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Cumulative Returns FANG database
@@ -205,7 +204,7 @@ theme_tq() + scale_color_tq()
 Stock_AFGN_annual_cum_returns
 ```
 
-## Comparative Yearly Cumulative returns
+## Compararison of Yearly Cumulative Returns
 The yearly cumulative return of Netflix has decreased compared to the FANG database from 2013 to 2016. NFLX had their highest peak in 2015 and 2016 with approximately 750 usd;however, from 2016 to 2020 their highest peak was on 2020 with 450 usd in investment growth. FB, AMZN and GOOG graphs remained in the same parameters of growth. FB with a highest peak of 400 usd in 2016 and 300 usd in 2021, GOOG with 200 usd in 2016 and 300 usd in 2021, and AMZN with 300 usd in 2016 and 400 usd in 2021. For their lowest values, the three companies presented 100 usd as their lowest point in both of the periods established (2013-2016 vs 2017-2021). 
 
 ## Monthly Returns
@@ -257,12 +256,13 @@ theme_tq() + scale_fill_tq()
 ```
 
 As can be concluded from these figures, the stocks of Amazon, Facebook and Google seem to be very volatile with a lot of negative returns. It can also be seen that Amazon and Netflix have the highest negatives with both reaching -20.22% and 19.34%, respectively.
-# Comparison Monthly Returns
+
+## Comparison of Monthly Returns
 The comparison between this two periods, the first one is for 2013-2017 and this is for 2017-2021, we can see how volatility is higher in this last period, it can be for many causes, one of them that is very important is the pandemic factor that came to disturb many business. In that order we can say that in this last four charts we have atypical years, in contrast with the last period that is a more normal and have constant returns; but even though the volatility of this period it still giving returns, for more risk, greater returns. 
 
-Therefore, cumulative monthly returns will be analized in the next chapter.
+Therefore, cumulative monthly returns will be analyzed in the next chapter.
 
-# Cumulative Monthly Returns
+## Cumulative Monthly Returns
 Cumulative monthly returns per stock, under the presumption of investing 100 USD at the beginning of the period, are regarded in the next graphs. First of all, the period between 2013 and 2016 will be visualized. 
 
 ```{r,echo=FALSE, warning=FALSE}
@@ -335,15 +335,14 @@ theme_tq() + scale_color_tq()
 
 On July 30, 2021 the four stocks increased the investment of 100 USD on December 30, 2016 to the following monthly cumulative USD returns: Amazon 444 USD, Facebook 310 USD, Google 351 USD and Netflix 418 USD. In this case, the originally 100 USD invested in Amazon or Netflix during the 4 years would lead to the highest returns of 444 USD and 418 USD, respectively. The most stable stock in the investigated time period is Google, while the other three stocks display more volatility. The least return stems from the investment into Facebook as can be seen in the above figures. Google gives higher returns of 41 USD compared to Facebook while it is roughly 70 USD below Netflix. Interestingly, the two stocks showing the least returns, Facebook and Google, are the ones that have an upward trend in the last months of investigation, while the stocks with the highest returns in the period, Amazon and Netflix, display a downward trend.  
 
-# Comparison of Monthly Cumulative USD Returns (2013-2016 vs 2017-2021)
+## Comparison of Monthly Cumulative USD Returns (2013-2016 vs 2017-2021)
 When comparing Amazon, Facebook, Google and Netflix in the period 2013-01-02 to 2016-12-30 to the time frame of 2016-12-30 to 2021-07-31 different outcomes can be observed. First of all, Netflix was the forerunner in the first period of investigation, while in the second time frame the stock was in second place behind Amazon. From 2013 to 2016, Netflix's monthly cumulative USD return was at 942 USD, while in the period to 2021, the returns almost halved to 418 USD. The total return in the whole period for the company was therefore 1,360 USD. Secondly, Amazon, the best performing stock in the period 2017 to 2021 with a cumulative monthly return of 444 USD, was third compared to the other FANG stocks between 2013 and 2016 with a cumulative return of 291 USD on the 100 USD investment. As a result, their total cumulative monthly return was 735 USD. Thirdly, Facebook's stock achieved a comparatively high return of 410 USD in the first period, while the returns dropped by 24% to 310 USD in the following time frame. The total return between 2013 and 2021 is therefore 720 USD. Finally, Google, the company that showed the lowest returns of 214 USD up to 2016, increased the returns to 351 USD with an initial investment of 100 USD in the next four years. The company's total returns for the two periods therefore sum up to 565 USD. As a result, the highest total monthly cumulative returns over the whole period 2013 to 2021 had Netflix with 1,360 USD, followed by Amazon with 735 USD, Facebook with 720 USD and Google with 565 USD.
 In terms of volatility, the most stable stock in the first period was Facebook while Google showed the least volatility of the four companies in the last period. Google and Netflix were the stocks that showed an upward trend in the last months of the first period, while Facebook and Google displayed an upward trend in the upcoming months to July 2021.
 To sum up, based on the total monthly cumulative returns of the two periods combined, Netflix would be the best investment. A counterargument could be the current downward trend of the stock, however, as could be seen from the investigation, this company has a rather volatile history.
 
 
-# Distribution of Returns 
-Another way to see monthly stock returns is through density plots. The density plots can show us the distribution of values, which is useful when the objective is to assess the most likely return a stock can have. 
-Let's visualize first the density plot for the FANG data. 
+## Distribution of Returns 
+Another way to see monthly stock returns is through density plots. The density plots can show the distribution of values, which is useful when the objective is to assess the most likely return a stock can have. Therefore, the density plot for the FANG data is visualized first. 
 
 ````{r,echo=FALSE, warning=FALSE}
 #Density plots FANG data
@@ -379,7 +378,8 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq()
 ```
-With the density graph above, we can get a scope of the average monthly returns on the stocks, we can appreciate that NFLX have had better returns than the other stocks, but also is the stock with more volatility, sometimes with returns around 40%, with this insights we can confirm that usually return and risk have a positive correlation (i.e., greater the risk, greater could be the return), but even if this is a generality in the financial markets, there are better ways to measure the relation between risk and return, such as the risk adjusted performance measures. Soon we will get to that point.
+
+With the density graph above, one can get a scope of the average monthly returns on the stocks. It can be appreciated that NFLX had better returns than the other stocks, but is also the stock with more volatility, sometimes with returns around 40%. With these insights it can be confirmed that in general return and risk have a positive correlation (i.e., greater the risk, greater could be the return), but even if this is a generality in the financial markets, there are better ways to measure the relation between risk and return, such as the risk adjusted performance measures. This topic will be tackled later.
 
 ```{r,echo=FALSE, warning=FALSE}
 # Density plots.
@@ -391,9 +391,10 @@ labs(title = "Amazon, Facebook, Google and Netflix: Charting the Monthly Returns
 x = "Monthly Returns", y = "Density") + xlim(-0.3, 0.9) +
 theme_tq() + scale_fill_tq() + facet_wrap(~ symbol, ncol = 2)
 ```
-Let's analyze each plot in comparison with the FANG chart Monthly Returns from this two periods,as first instant we could say that GOOG is the one that gives me more return in both periods, but if we analize it carefully we can see that the distribution of NFLX is more spread in our graphic than the others, in that case we can say that this stock is riskier than the other three. Also we can see a clear contrast between this two periods that is the way that the density of the stocks is higher than the last period. With all that being said, we can conclude that GOOG is the safest stock, because is the most stable one that has less movements around the period. Here know its the investors call to choose which stock is better for them, if they want to get higher return, they should go for the one who has more risk, but if they feel a little afraid of the risk and want to play it safer, they should go for GOOG because is the one that has lees changes andh give us less risk, than the other ones. 
 
-To complete our previous analysis let's propose some statistical indicators in order to get to a risk adjusted performance analysis approach. 
+Here each plot will be analyzed in comparison with the FANG chart Monthly Returns. As a first instance it can be said that GOOG is the one that gives more returns in both periods, but if analyzed carefully one can see that the distribution of NFLX is more widely spread in our graphic than the others. In that case it can be mentioned that this stock is riskier than the other three. Furthermore, it can be observed that there is a clear contrast between the two periods that is the way that the density of the stocks is higher than the last period. With all that being said, it can be concluded that GOOG is the safest stock, because it is the most stable that has least movements around the period. At this point it is the investor's call to choose which stock is better for them. If their objetcive is to get higher returns, they should go for the one that has more risk, but if they feel a little afraid of the risk and want to play it safe, they should go for GOOG because it is the one that has least changes and offers least risk, compared to the other three stocks. 
+
+To complete the previous analysis it is important to look into some statistical indicators in order to get to a risk adjusted performance analysis approach. 
 
 ```{r,echo=FALSE, warning=FALSE}
 # Calculate relevant statistics FANG data
@@ -403,8 +404,7 @@ sr = mean/sd, iqr = IQR(monthly.returns))
 FANG_stats
 ```
 
-We can see that in this case the stock with highest mean is NFLX and the lowest is GOOG. So, the expected return of NFLX is the highest.  
-Let's see the risk of the FANG data in a plot 
+It can be observed that in this case the stock with highest mean is NFLX and the lowest is GOOG. So, the expected return of NFLX is the highest. In a next step, the risk of the FANG data in a plot will be visualized.
 
 ```{r,echo=FALSE, warning=FALSE}
 #Mean Variance plot 
@@ -419,7 +419,7 @@ subtitle = "Numerical values represent return per unit of risk.",
 x = "Risk", y = "Return") + theme_tq()
 ```
 
-Netflix is the stock with the highest return and risk. Now let's compare this results with the data from 2016-12-30 to 2021-07-31
+Netflix is the stock with the highest return and risk. These results will now be compared with the data from 2016-12-30 to 2021-07-31
 
 ```{r,echo=FALSE, warning=FALSE}
 # Calculate relevant statistics from 2016-12-30 to 2021-07-31
@@ -429,8 +429,7 @@ sr = mean/sd, iqr = IQR(monthly.returns))
 Stock_AFGN_stats
 ```
 
-In this case, as in the FANG data, the stock with highest mean is NFLX, so the expected return of NFLX is the highest. On the contrary, in this case the lowest mean is FB, so FB expected return is closest to zero. But, the stock with lowest risk is GOOG, because the standard deviation is the lowest.  
-Let's see the risk and return in a plot
+In this case, as in the FANG dataset, the stock with the highest mean is NFLX, as a result, the expected return of NFLX is the highest. On the contrary, in this case the lowest mean is FB, therefore, Facebook's expected return is closest to zero. Nevertheless, the stock with the lowest risk is GOOG, since the standard deviation is the lowest. To make the risk and return visible, the next plot focuses on visualization of it.
 
 ```{r,echo=FALSE, warning=FALSE}
 Stock_AFGN_stats %>%
@@ -444,7 +443,7 @@ subtitle = "Numerical values represent return per unit of risk.",
 x = "Risk", y = "Return") + theme_tq()
 ```
 
-Now that we have a risk adjusted performance measure such as sharpe ratio, we can get deeper insights. In the first period, NFLX over performed the other stocks quite significantly and we can see it visually in the graph, the NFLX sharpe ratio is not equidistant between the other ones, this matches with the idea that NFLX have had a lot of volatility over the first period, but also delivering high returns according to its level of risk. In the second period, The sharpe ratios had changed, and now the Stock delivering better risk adjusted performance is GOOG. If we observe the first period again, we could note that if you connect the dots of all the stocks, they create a kind of a slope, the interpretation could be that risk and return between all the stocks are proportional between each other. In the second graph the relation between risk and return is not proportional, this means there are stocks offering better returns in terms of their risk such as GOOG and AMZN. NFLX and AMZN offered almost the same return but NFLX with a greater volatility, and GOOG had offer a better return than FB with less volatility. Now that we have this insights is quite more easy to compare the performance of the stocks.
+Now that a a risk adjusted performance measure such as sharpe ratio has been established, deeper insights can be drawn. In the first period, NFLX outperformed the other stocks quite significantly, which can be seen visually in the graph. The NFLX sharpe ratio is not equidistant between the other ones, this matches with the idea that NFLX had a lot of volatility over the first period, but also delivering high returns according to its level of risk. In the second period, The sharpe ratios has changed, and now the stock delivering better risk adjusted performance is GOOG. If one observes the first period again, it could be noted that if connecting the dots of all stocks, they create a kind of a slope, the interpretation could be that risk and return between all the stocks are proportional between each other. In the second graph the relation between risk and return is not proportional, this means that there are stocks offering better returns in terms of their risk such as GOOG and AMZN. NFLX and AMZN offered almost the same return but NFLX with a greater volatility, and GOOG had offer a better return than FB with less volatility. Now that we have these insights, it is more easy to compare the real performance of the stocks.
 
 
 ```{r,echo=FALSE, warning=FALSE}
@@ -461,4 +460,4 @@ geom_density(alpha = 0.5, adjust = 3)
 ```
 
 ## Conclusion 
-Now that we have several information about the performance of the stocks over two different periods, we could imply that the best decision would've been to invest from 2013 to 2016 in NFLX stock, while during 2017 to 2021, the best decision would've been to invest in AMZN. As we mention before, in the financial markets there is a relation between risk and return, risk is measured in terms of volatility which is the standard deviation of the returns, and the returns are measured in terms of the relative changes in the stock prices over time. As we can see in the graph above, a riskier asset will give you better chances of having better returns, but, also more probabilities of losing money, while a less risky asset may provide you with smaller returns but also with less probability of losing money. Every investor should know their risk aversion and in order to that, take their investment decisions based on financial analysis. The conclusion is simple, if you want to earn big, you need to be willing to also lose sometimes, but if you make a deep analysis that provides you with useful information, you can decrease those probabilities of losing and increase the ones of winning.
+Through the process of the analysis, several new information could be collected about the performance of the stocks over two different periods. It can be implied that the best decision would have been to invest from 2013 to 2016 in the NFLX stock, while during 2017 to 2021, the best decision would have been to invest in AMZN. As mentioned beforehand, in the financial markets there is a relation between risk and return. While risk is measured in terms of volatility which is the standard deviation of the returns, the returns are measured in terms of the relative changes in the stock prices over time. As can be observed in the graph above, a riskier asset will give an investor better chances of having higher returns, but, also more probabilities of losing money, while a less risky asset may provide you with smaller returns but also with less probability of losing money. Every investor should know their risk aversion and in order to that, take their investment decisions based on financial analysis. The conclusion is simple, if you want to earn big, you need to be willing to also lose sometimes, but if you make a deep analysis that provides you with useful information, you can decrease those probabilities of losing and increase the ones of winning.
