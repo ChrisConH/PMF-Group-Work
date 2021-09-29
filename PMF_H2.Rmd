@@ -22,28 +22,368 @@ library(tbl2xts)
 library(dplyr)
 library(lazyeval)
 library(lubridate)
-library(tidiverse)
+library(tidyverse)
 library(tidyr)
 library(fpp3)
 library(tbl2xts)
 library(BatchGetSymbols)
+library(forecast)
 ```
 
-## R Markdown
+## Stock Returns
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 
 ```{r, echo=FALSE, warning=FALSE}
+# stock returns
+R_stocks <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT",
+"KLAC", "TEF") %>%
+tq_get(get = "stock.prices", from = "2010-01-01",
+to = "2015-12-31") %>%
+group_by(symbol) %>%
+tq_transmute(select = adjusted,
+mutate_fun = periodReturn,
+period = "monthly",
+col_rename = "R_stocks")
+R_stocks
+```
+
+## S&P500
+
+
+```{r, echo=FALSE, warning=FALSE}
+# S&P500 monthly returns
+R_market <- "^GSPC" %>%
+tq_get(get = "stock.prices", from = "2010-01-01", to = "2015-12-31") %>%
+tq_transmute(select = adjusted,
+             mutate_fun = periodReturn,
+              period = "monthly",
+              col_rename = "R_market")
+R_market
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+R_stocks_market <- left_join(R_stocks, R_market, by = c("date" = "date"))
+R_stocks_market
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+# All models estimated at once.
+R_capm <- R_stocks_market %>%
+tq_performance(Ra = R_stocks,
+Rb = R_market,
+performance_fun = table.CAPM) %>%
+select(symbol, Alpha, Beta, `R-squared`)
+R_capm
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+R_stocks_market$symbol <- factor(R_stocks_market$symbol, levels =
+unique(R_stocks_market$symbol))
+
+# Plot all results.
+R_stocks_market %>%
+ggplot(aes(x = R_market, y = R_stocks, color = symbol)) +
+geom_point(alpha = 0.4) +
+geom_smooth(method = "lm", se = FALSE) +
+facet_wrap(~symbol, ncol = 5) +
+geom_abline(intercept = 0, color = "black", linetype = 1) +
+theme_minimal() +
+labs(x = "SP500 Return", y = "Asset Return",
+title = "Relationship between asset return and market") +
+theme(legend.position = "none", legend.title = element_blank())
+```
+
+```{r, echo=FALSE, warning=FALSE}
+R_stocks_market %>%
+tq_performance(Ra = R_stocks, Rb = NULL,
+performance_fun = table.AnnualizedReturns) %>%
+arrange(`AnnualizedSharpe(Rf=0%)`)
+```
+
+
+```{r, echo=FALSE, warning=FALSE}
+# Calculate annualized returns.
+R_stocks_market_stats <- R_stocks_market %>%
+tq_performance(Ra = R_stocks, Rb = NULL,
+performance_fun = table.AnnualizedReturns) %>%
+# Mean variance plot.
+ggplot(aes(x = AnnualizedStdDev, y = AnnualizedReturn, color = symbol)) +
+geom_point(size = 5) +
+geom_abline(intercept = 0, color = "red") +
+geom_text(aes(label = paste0(round(`AnnualizedSharpe(Rf=0%)`, 3))),
+vjust = 2, color = "black", size = 3.5) +
+geom_text(aes(label = paste0(symbol)),
+vjust = -1, color = "black", size = 3.5) + ylim(-0.17, 0.35) +
+labs(title = "The higher the risk, the higher the return?",
+subtitle = "Numerical values represent return per unit of risk.",
+x = "Risk", y = "Return") + theme_tq() +
+theme(legend.position = "none", legend.title = element_blank())
+R_stocks_market_stats
+```
+
+
+```{r}
+# Download individual asset returns.
+R_stocks_mkt <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT",
+"KLAC", "TEF", "^GSPC") %>%
+tq_get(get = "stock.prices", from = "2010-01-01",
+to = "2015-12-31") %>%
+group_by(symbol) %>%
+tq_transmute(select = adjusted,
+mutate_fun = periodReturn,
+period = "monthly",
+col_rename = "r")
+R_stocks_mkt
+```
+
+
+```{r}
+R_stocks_mkt %>%
+tq_performance(Ra = r, Rb = NULL,
+performance_fun = table.AnnualizedReturns) %>%
+arrange(`AnnualizedSharpe(Rf=0%)`)
+```
+
+
+```{r}
+# Calculate annualized returns.
+R_stocks_mkt_stats <- R_stocks_mkt %>%
+tq_performance(Ra = r, Rb = NULL, performance_fun = table.AnnualizedReturns) %>%
+  
+# Mean variance plot.
+ggplot(aes(x = AnnualizedStdDev, y = AnnualizedReturn, color = symbol)) +
+geom_point(size = 5) +
+geom_abline(intercept = 0, color = "red") +
+geom_text(aes(label = paste0(round(`AnnualizedSharpe(Rf=0%)`, 3))),
+vjust = 2, color = "black", size = 3.5) +
+geom_text(aes(label = paste0(symbol)),
+vjust = -1, color = "black", size = 3.5) +
+ylim(-.17, .35) +
+labs(title = "The higher the risk, the higher the return?",
+subtitle = "Numerical values represent return per unit of risk.",
+x = "Risk", y = "Return") + theme_tq() +
+theme(legend.position = "none", legend.title = element_blank())
+R_stocks_mkt_stats
+```
+
+
+```{r}
+# Weights.
+wts <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+# Portfolio creation.
+portfolio_returns_monthly <- R_stocks_market %>%
+tq_portfolio(assets_col = symbol,
+returns_col = R_stocks,
+weights = wts,
+col_rename = "Ra")
+portfolio_returns_monthly %>%
+# Visualization.
+ggplot(aes(x = date, y = Ra)) +
+geom_bar(stat = "identity", fill = palette_light()[[1]]) +
+labs(title = "Portfolio monthly returns.",
+subtitle = "10% in each one of the 10 assets.",
+caption = "Shows an above-zero trend meaning positive returns.",
+x = "", y = "Monthly Returns") +
+geom_smooth(method = "lm", color = "red") +
+theme_tq() + scale_color_tq() +
+scale_y_continuous(labels = scales::percent)
+```
+
+
+```{r}
+# Cumulative returns.
+portfolio_growth_monthly <- R_stocks_market %>%
+tq_portfolio(assets_col = symbol,
+returns_col = R_stocks,
+weights = wts,
+col_rename = "investment.growth",
+wealth.index = TRUE) %>%
+mutate(investment.growth = investment.growth * 10000)
+portfolio_growth_monthly %>%
+ggplot(aes(x = date, y = investment.growth)) +
+geom_line(size = 2, color = palette_light()[[1]]) +
+labs(title = "Portfolio growth of $10,000.",
+subtitle = "10% in each one of the 10 assets.",
+caption = "Now we can really visualize performance!",
+x = "", y = "Portfolio Value") +
+geom_smooth(method = "loess") +
+theme_tq() +
+scale_color_tq() +
+scale_y_continuous(labels = scales::dollar)
+```
+
+
+```{r}
+# Calculate annualized returns.
+R_stocks_market %>%
+tq_performance(Ra = R_stocks, Rb = NULL,
+performance_fun = table.AnnualizedReturns) %>%
+arrange(`AnnualizedSharpe(Rf=0%)`) %>%
+left_join(R_capm,by = 'symbol') %>%
+select(symbol, `AnnualizedSharpe(Rf=0%)`, Beta)
 
 ```
 
-## Including Plots
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# Three portfolios.
+weights <- c(
+0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1, # equally weighted
+0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.3, 0.4, # sr increasing
+0, 0.2, 0.1, 0.3, 0, 0, 0.4, 0, 0, 0 # beta increasing
+)
+stocks <- c("NEM", "TEF", "F", "TXT", "AMCR", "PEAK",
+"KLAC", "TXN", "CLX", "KR")
+weights_table <- tibble(stocks) %>%
+tq_repeat_df(n = 3) %>%
+bind_cols(tibble(weights)) %>%
+group_by(portfolio)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+# See the evolution of three portfolios.
+stock_returns_monthly_multi <- R_stocks_market %>%
+tq_repeat_df(n = 3)
+portfolio_growth_monthly_multi <- stock_returns_monthly_multi %>%
+tq_portfolio(assets_col = symbol,
+returns_col = R_stocks,
+weights = weights_table,
+col_rename = "investment.growth",
+wealth.index = TRUE) %>%
+mutate(investment.growth = investment.growth * 10000)
+portfolio_growth_monthly_multi %>%
+ggplot(aes(x = date, y = investment.growth, color = factor(portfolio))) +
+geom_line(size = 2) +
+labs(title = "Portfolio growth of 10,000.",
+subtitle = "1: Equally weighted; 2: Sharpe ratio; 3: Beta",
+caption = "Portfolio 2 is a Standout!",
+x = "", y = "Portfolio Value",
+color = "Portfolio") +
+geom_smooth(method = "loess") +
+theme_tq() + scale_color_tq() +
+scale_y_continuous(labels = scales::dollar)
+```
+
+
+```{r}
+#S&P500 index
+sp_500 <- "^GSPC" %>%
+tq_get(get = "stock.prices", from = "1995-01-01",
+to = "2017-12-31") %>%
+tq_transmute(select = adjusted,
+mutate_fun = to.monthly,
+col_rename = "sp_500")
+```
+
+
+```{r}
+# Split the data into training and test.
+sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
+sp500_training <- window(sp500_all, start = 1995, end = c(2014, 12))
+sp500_test <- window(sp500_all, start = 2015)
+# See the data before forecast.
+plot(sp500_all, type = "l", main = "SP500 index evolution. Train set in black, test set in red.")
+lines(sp500_training, col = "black")
+lines(sp500_test, col ="red")
+abline(v = 2015, lty = 2, col = "red")
+```
+
+
+```{r}
+# Estimation of ARIMA model.
+fit <- auto.arima(sp500_training)
+# See results.
+summary(fit)
+```
+
+
+```{r}
+# 36-month forecast.
+for_sp500_all <- forecast(fit, h = 36)
+# Evaluate percentage error.
+cbind(arima_forecast = tail(for_sp500_all$mean, 36),
+test_set = tail(sp500_test, 36),
+percentage_error = 100*(tail(for_sp500_all$mean, 36) -
+tail(sp500_test, 36))/(tail(for_sp500_all$mean, 36)))
+```
+
+
+```{r}
+plot(for_sp500_all, main = "ARIMA forecast in blue.
+Training set in black, test set in red.")
+lines(sp500_test, col = "red")
+abline(v = 2015, lty = 2, col = "red")
+```
+
+
+```{r}
+sp500_all.tsibble <- as_tsibble(sp500_all)
+sp500_training.tsibble <- as_tsibble(sp500_training)
+sp500_training.tsibble %>%
+model(AAN = ETS(sp500_training ~ error("A") + trend("A") + season("N"))) %>%
+forecast(h = 36) %>%
+autoplot(sp500_training.tsibble) +
+labs(title = "SP500",
+y = "Index") +
+guides(colour = guide_legend(title = "Forecast")) +
+autolayer(sp500_all.tsibble)
+```
+
+
+```{r}
+sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
+sp500_all.tsibble <- as_tsibble(sp500_all)
+sp500_training.tsibble %>%
+model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))%>%
+forecast(h = 36) %>%
+autoplot(sp500_training.tsibble) +
+labs(title = "SP500",
+y = "Index") +
+guides(colour = guide_legend(title = "Forecast")) +
+autolayer(sp500_all.tsibble)
+```
+
+
+```{r}
+sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
+sp500_all.tsibble <- as_tsibble(sp500_all)
+sp500_all.tsibble %>%
+model(
+classical_decomposition(value, type = "additive")) %>%
+components() %>%
+autoplot() +
+labs(title = "Classical additive decomposition of total
+US retail employment")
+```
+
+
+```{r}
+# 36-month forecast.
+for_tbats <- forecast::forecast(sp500_training, h = 36)
+df_tbats = as.data.frame(for_tbats)
+df_tbats <- ts(df_tbats$`Point Forecast`, start = c(2015, 1), freq = 12)
+# Evaluate percentage error.
+cbind(TBATS_forecast = df_tbats,
+test_set=tail(sp500_test, 36),
+percentage_error = 100*((df_tbats) -
+tail(sp500_test, 36))/(df_tbats))
+```
+
+
+```{r}
+# Plot all previous results.
+plot(sp500_all, main = "ARIMA forecast in blue, TBATS in green.
+Training set in black, test set in red.")
+lines(sp500_training)
+lines(sp500_test, col = "red")
+lines(df_tbats, col = "green", lwd = 3)
+lines(for_sp500_all$mean, col = "blue", lwd = 3)
+abline(v = 2015, lty = 2, col = "red")
+```
+
