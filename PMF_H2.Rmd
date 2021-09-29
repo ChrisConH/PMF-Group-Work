@@ -22,6 +22,11 @@ library(tbl2xts)
 library(dplyr)
 library(lazyeval)
 library(lubridate)
+library(tidiverse)
+library(tidyr)
+library(fpp3)
+library(tbl2xts)
+library(BatchGetSymbols)
 ```
 
 ## R Markdown
