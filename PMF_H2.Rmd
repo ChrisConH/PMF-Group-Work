@@ -31,8 +31,8 @@ library(forecast)
 ```
 
 ## Asset Pricing 
-Risk and return play an important role in making any investment decisions. As we know, the aim focus of asset pricing theories is to determine the fundamental value of assets and there is a relation between this and an appropriate return. So, the focus of asset pricing theories is to determine this appropriate return. 
-We choose three different US stocks from different industries: Nike, Microsoft, and McDonald's Corporation. This assignment includes the last 5 years of monthly returns for the three individual stocks that we already mention and the S&P500 stock index. The objective is to provide a comparative analysis of the relationship between asset returns and market. 
+Risk and return play an important role in making any investment decisions. As we know, the main focus of asset pricing theories is to determine the fundamental value of assets and there is a relation between this and an appropriate return. So, the focus of asset pricing theories is to determine this appropriate return. 
+For this report, three U.S. stocks from different industries were selected, which are the following: Nike, Microsoft, and McDonald's Corporation. This assignment includes the last five years of monthly returns for the three individual stocks and the S&P500 stock index. The objective is to provide a comparative analysis of the relationship between asset returns and market. 
 
 ## Single-index model 
 Determining efficient portfolios within an asset class can be achieved with the Single-index model. The market return is an aggregation of all individual asset returns traded in the stock market. The Single Index Model relates returns on each security to the returns on a common index, such as the S&P500 Stock Index.
@@ -47,10 +47,12 @@ Ri = expected return on security i
 I = expected return on index (S&P500j)
 ei = error term with the mean of zero and a standard deviation which is a constant
 
-Once knowing this, let's estimate the model. As we said before, we have selected 3 stocks, i = 1,...3, and 69 monthly returns observations j=1,...69.
-Our purpose is to find αi and βi for these 3 stocks (Nike, Microsoft, and McDonald's Corporation)
+This model is the basis for further investigation. As mentioned before, three stocks were selected, i = 1,...3, and 69 monthly returns observations j=1,...69.
+Our purpose is to find αi and βi for the stocks of Nike, Microsoft, and McDonald's Corporation. 
 
 ## Individual Assets Returns
+The stock returns of the past five years for Nike, Microsoft and McDonald's Corporation are the following:
+
 ```{r, echo=FALSE, warning=FALSE}
 # stock returns
 R_stocks <- c("NKE", "MSFT", "MCD") %>%
@@ -65,7 +67,8 @@ R_stocks
 ```
 
 ## S&P500
-Then, we download the S&P500 monthly returns
+Concerning the S&P500, monthly returns for the past five years are:
+
 ```{r, echo=FALSE, warning=FALSE}
 # S&P500 monthly returns
 R_market <- "^GSPC" %>%
@@ -76,7 +79,9 @@ tq_transmute(select = adjusted,
               col_rename = "R_market")
 R_market
 ```
-Now, we join them in the same variable.
+
+Here, the S&P500 returns are merged with the three stocks, Nike, Microsoft and McDonald's Corporation, into the same variable.
+
 ```{r, echo=FALSE, warning=FALSE}
 R_stocks_market <- left_join(R_stocks, R_market, by = c("date" = "date"))
 R_stocks_market
@@ -91,10 +96,10 @@ performance_fun = table.CAPM) %>%
 select(symbol, Alpha, Beta, `R-squared`)
 R_capm
 ```
-From above table we can see the results for the single index model estimation for the 3 stocks. First, let's discuss the beta. We have stocks β from 0.5935 to 0.8628. We interpret this as a measure of the volatility, or systematic risk, of a security or a portfolio in comparison to the market as a whole. In other words, beta gives a sense of a stock's market risk compared to the
-greater market. Beta coefficient is a measure of sensitivity of a share price to movement in the market price. In this case, MCD have the lowest beta so is less exposed to change in the S&P500, so we can said that MCD might be exposed to other risk facts, but not at all with the market, we will analyze this point later. On the other hand, stocks with high betas like, in our case, NKE are highly exposed to changes in the S&P500. Nevertheless, the beta of NKE is less than 1, which means is less volatile than the whole market. If we had a β that’s greater than 1 is more volatile than the market, which is not the case. 
 
-We need a deeper econometric analysis to validate our interpretations. All alphas are very close to zero. The R-squared shows what proportion of changes in the stock returns are explained by changes in the stock market, the 47% of MSFT stock return changes are explained by changes in the S&P500
+From the above table one can observe the results for the single index model estimation for the three stocks. First, let's discuss the beta. There are stocks β from 0.5935 to 0.8628. This can be interpreted as a measure of the volatility, or systematic risk, of a security or a portfolio in comparison to the market as a whole. In other words, beta gives a sense of a stock's market risk compared to the greater market. Beta coefficient is a measure of sensitivity of a share price to movement in the market price. In this case, MCD has the lowest beta so it is less exposed to change in the S&P500, therefore, it can be said that MCD might be exposed to other risk factors, but not at all with the market, this point will be analyzed later in the report. On the other hand, stocks with high betas, as in our case, NKE are highly exposed to changes in the S&P500. Nevertheless, the beta of NKE is less than 1, which means it is less volatile than the whole market. If there was a β that is greater than 1, it would be more volatile than the market, which is not the case here. 
+
+A deeper econometric analysis is needed to validate the above interpretations. All alphas are very close to zero. The R-squared shows what proportion of changes in the stock returns are explained by changes in the stock market, the 47% of MSFT stock return changes are explained by changes in the S&P500
 
 Let's illustrate the previous results in a graphical way.
 
@@ -122,6 +127,7 @@ performance_fun = table.AnnualizedReturns) %>%
 arrange(`AnnualizedSharpe(Rf=0%)`)
 ```
 
+## Annualized Returns with a Mean Variance Plot 
 
 ```{r, echo=FALSE, warning=FALSE}
 # Calculate annualized returns.
@@ -143,55 +149,11 @@ theme(legend.position = "none", legend.title = element_blank())
 R_stocks_market_stats
 ```
 
+## Portfolio Creation with Equal Weigths
 
-```{r}
-# Download individual asset returns.
-R_stocks_mkt <- c("NEM", "AMCR", "CLX", "PEAK", "KR", "TXN", "F", "TXT",
-"KLAC", "TEF", "^GSPC") %>%
-tq_get(get = "stock.prices", from = "2010-01-01",
-to = "2015-12-31") %>%
-group_by(symbol) %>%
-tq_transmute(select = adjusted,
-mutate_fun = periodReturn,
-period = "monthly",
-col_rename = "r")
-R_stocks_mkt
-```
-
-
-```{r}
-R_stocks_mkt %>%
-tq_performance(Ra = r, Rb = NULL,
-performance_fun = table.AnnualizedReturns) %>%
-arrange(`AnnualizedSharpe(Rf=0%)`)
-```
-
-
-```{r}
-# Calculate annualized returns.
-R_stocks_mkt_stats <- R_stocks_mkt %>%
-tq_performance(Ra = r, Rb = NULL, performance_fun = table.AnnualizedReturns) %>%
-  
-# Mean variance plot.
-ggplot(aes(x = AnnualizedStdDev, y = AnnualizedReturn, color = symbol)) +
-geom_point(size = 5) +
-geom_abline(intercept = 0, color = "red") +
-geom_text(aes(label = paste0(round(`AnnualizedSharpe(Rf=0%)`, 3))),
-vjust = 2, color = "black", size = 3.5) +
-geom_text(aes(label = paste0(symbol)),
-vjust = -1, color = "black", size = 3.5) +
-ylim(-.17, .35) +
-labs(title = "The higher the risk, the higher the return?",
-subtitle = "Numerical values represent return per unit of risk.",
-x = "Risk", y = "Return") + theme_tq() +
-theme(legend.position = "none", legend.title = element_blank())
-R_stocks_mkt_stats
-```
-
-
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 # Weights.
-wts <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1)
+wts <- c(1/3, 1/3, 1/3)
 # Portfolio creation.
 portfolio_returns_monthly <- R_stocks_market %>%
 tq_portfolio(assets_col = symbol,
@@ -211,8 +173,9 @@ theme_tq() + scale_color_tq() +
 scale_y_continuous(labels = scales::percent)
 ```
 
+## Cumulative Returns
 
-```{r}
+```{r,echo=FALSE, warning=FALSE}
 # Cumulative returns.
 portfolio_growth_monthly <- R_stocks_market %>%
 tq_portfolio(assets_col = symbol,
@@ -234,8 +197,9 @@ scale_color_tq() +
 scale_y_continuous(labels = scales::dollar)
 ```
 
+## Annualized Returns
 
-```{r}
+```{r,echo=FALSE, warning=FALSE}
 # Calculate annualized returns.
 R_stocks_market %>%
 tq_performance(Ra = R_stocks, Rb = NULL,
@@ -246,25 +210,25 @@ select(symbol, `AnnualizedSharpe(Rf=0%)`, Beta)
 
 ```
 
+## Comparison between Three Portfolios
 
-
-```{r}
-# Three portfolios.
+```{r, echo=FALSE, warning=FALSE}
 weights <- c(
-0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1, # equally weighted
-0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.3, 0.4, # sr increasing
-0, 0.2, 0.1, 0.3, 0, 0, 0.4, 0, 0, 0 # beta increasing
+1/3,1/3,1/3, # equally weighted
+0.225, 0.45, 0.325,  # sr increasing
+0.45, 0.225, 0.325 # beta increasing
 )
-stocks <- c("NEM", "TEF", "F", "TXT", "AMCR", "PEAK",
-"KLAC", "TXN", "CLX", "KR")
+
+stocks <- c("NKE", "MSFT", "MCD")
 weights_table <- tibble(stocks) %>%
 tq_repeat_df(n = 3) %>%
 bind_cols(tibble(weights)) %>%
 group_by(portfolio)
 ```
 
+## Evolution of the Three Portfolios
 
-```{r}
+```{r, echo=FALSE, warning=FALSE}
 # See the evolution of three portfolios.
 stock_returns_monthly_multi <- R_stocks_market %>%
 tq_repeat_df(n = 3)
@@ -288,120 +252,5 @@ theme_tq() + scale_color_tq() +
 scale_y_continuous(labels = scales::dollar)
 ```
 
-
-```{r}
-#S&P500 index
-sp_500 <- "^GSPC" %>%
-tq_get(get = "stock.prices", from = "1995-01-01",
-to = "2017-12-31") %>%
-tq_transmute(select = adjusted,
-mutate_fun = to.monthly,
-col_rename = "sp_500")
-```
-
-
-```{r}
-# Split the data into training and test.
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_training <- window(sp500_all, start = 1995, end = c(2014, 12))
-sp500_test <- window(sp500_all, start = 2015)
-# See the data before forecast.
-plot(sp500_all, type = "l", main = "SP500 index evolution. Train set in black, test set in red.")
-lines(sp500_training, col = "black")
-lines(sp500_test, col ="red")
-abline(v = 2015, lty = 2, col = "red")
-```
-
-
-```{r}
-# Estimation of ARIMA model.
-fit <- auto.arima(sp500_training)
-# See results.
-summary(fit)
-```
-
-
-```{r}
-# 36-month forecast.
-for_sp500_all <- forecast(fit, h = 36)
-# Evaluate percentage error.
-cbind(arima_forecast = tail(for_sp500_all$mean, 36),
-test_set = tail(sp500_test, 36),
-percentage_error = 100*(tail(for_sp500_all$mean, 36) -
-tail(sp500_test, 36))/(tail(for_sp500_all$mean, 36)))
-```
-
-
-```{r}
-plot(for_sp500_all, main = "ARIMA forecast in blue.
-Training set in black, test set in red.")
-lines(sp500_test, col = "red")
-abline(v = 2015, lty = 2, col = "red")
-```
-
-
-```{r}
-sp500_all.tsibble <- as_tsibble(sp500_all)
-sp500_training.tsibble <- as_tsibble(sp500_training)
-sp500_training.tsibble %>%
-model(AAN = ETS(sp500_training ~ error("A") + trend("A") + season("N"))) %>%
-forecast(h = 36) %>%
-autoplot(sp500_training.tsibble) +
-labs(title = "SP500",
-y = "Index") +
-guides(colour = guide_legend(title = "Forecast")) +
-autolayer(sp500_all.tsibble)
-```
-
-
-```{r}
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_all.tsibble <- as_tsibble(sp500_all)
-sp500_training.tsibble %>%
-model(hw = ETS(sp500_training ~ error("A") + trend("A") + season("A")))%>%
-forecast(h = 36) %>%
-autoplot(sp500_training.tsibble) +
-labs(title = "SP500",
-y = "Index") +
-guides(colour = guide_legend(title = "Forecast")) +
-autolayer(sp500_all.tsibble)
-```
-
-
-```{r}
-sp500_all <- ts(sp_500$sp_500, start = c(1995, 1), freq = 12)
-sp500_all.tsibble <- as_tsibble(sp500_all)
-sp500_all.tsibble %>%
-model(
-classical_decomposition(value, type = "additive")) %>%
-components() %>%
-autoplot() +
-labs(title = "Classical additive decomposition of total
-US retail employment")
-```
-
-
-```{r}
-# 36-month forecast.
-for_tbats <- forecast::forecast(sp500_training, h = 36)
-df_tbats = as.data.frame(for_tbats)
-df_tbats <- ts(df_tbats$`Point Forecast`, start = c(2015, 1), freq = 12)
-# Evaluate percentage error.
-cbind(TBATS_forecast = df_tbats,
-test_set=tail(sp500_test, 36),
-percentage_error = 100*((df_tbats) -
-tail(sp500_test, 36))/(df_tbats))
-```
-
-
-```{r}
-# Plot all previous results.
-plot(sp500_all, main = "ARIMA forecast in blue, TBATS in green.
-Training set in black, test set in red.")
-lines(sp500_training)
-lines(sp500_test, col = "red")
-lines(df_tbats, col = "green", lwd = 3)
-lines(for_sp500_all$mean, col = "blue", lwd = 3)
-abline(v = 2015, lty = 2, col = "red")
-```
+## Conclusion
 
