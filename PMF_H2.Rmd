@@ -172,6 +172,7 @@ geom_smooth(method = "lm", color = "red") +
 theme_tq() + scale_color_tq() +
 scale_y_continuous(labels = scales::percent)
 ```
+Based on the table of the Portfolio Monthly returns, it can be interpreted that with the portfolio having equal weight assets, the company accomplished positive returns. The returns have increased from 2016 to 2022, therefore the portfolio tactic was successful. 
 
 ## Cumulative Returns
 
@@ -196,6 +197,7 @@ theme_tq() +
 scale_color_tq() +
 scale_y_continuous(labels = scales::dollar)
 ```
+As it was interpreted before, the portfolio had an increase in their returns. Based on the Comulative Returns graph,the portfolio had an increase of almost $30,000 in the last six years. 
 
 ## Annualized Returns
 
